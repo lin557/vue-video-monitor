@@ -46,7 +46,7 @@ flvjs.LoggingControl.enableError = false
 // const FLVJS_EVENTS_ERROR = 'error'
 
 // 超过5个process 都没有收到音频流 自动重载播放器
-const ERR_MAX_AUDIO_COUNT = 5
+const ERR_MAX_AUDIO_COUNT = 6
 // 网络超时25秒
 const ERR_NETWORK_TIMEOUT = 25000
 
@@ -229,10 +229,18 @@ export default {
       //     }
       //   ]
       // })
-      this.filename = options.src.split('\\').pop().split('/').pop()
+      this.filename = this.url2Filename(options.src)
       this.player.src([{ type: type, src: options.src }])
       this.player.autoplay()
       this.lastOptions = options
+    },
+    url2Filename(url) {
+      if (url) {
+        const vlist = url.split('?')
+        return vlist[0].split('\\').pop().split('/').pop()
+      } else {
+        return null
+      }
     }
   },
   mounted() {
@@ -305,6 +313,13 @@ export default {
     this.player.on('progress', () => {
       // console.log('progress')
       if (this.autoAudio && this.lastOptions.hasAudio) {
+        // 如果 m3u8 关闭这个功能
+        if (this.filename) {
+          if (this.filename.split('.').pop().toLowerCase() === 'm3u8') {
+            this.autoAudio = false
+          }
+        }
+
         this.procgress++
         if (this.procgress >= ERR_MAX_AUDIO_COUNT) {
           console.warn(
@@ -359,9 +374,9 @@ export default {
         this.error = e.type
       }
     })
-    this.player.on('abort', () => {
-      console.log('abort')
-    })
+    // this.player.on('abort', () => {
+    //   console.log('abort')
+    // })
   },
   watch: {
     status(value) {

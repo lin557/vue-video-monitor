@@ -65,17 +65,18 @@ export default {
         return 4
       }
     },
+    // 是否允许使用同一个地址打开多个窗口 默认false
+    duplicate: {
+      type: Boolean,
+      default: false
+    },
     focused: {
       type: Boolean,
-      default() {
-        return true
-      }
+      default: true
     },
     closeAfterViewChange: {
       type: Boolean,
-      default() {
-        return false
-      }
+      default: false
     },
     control: {
       type: Object,
@@ -213,19 +214,21 @@ export default {
      * 获取空闲视图
      */
     getIdleView(src) {
-      // 先查出src是否正在播放中
-      const filename = src.split('\\').pop().split('/').pop()
-      for (let i = 0; i < this.viewCount; i++) {
-        const player = this.getPlayerById(this.videos[i].id)
-        // 报错的窗口 或 正在播放中的窗口
-        if (player.status > 0) {
-          if (filename === player.filename) {
-            // 说明正在播放
-            if (player.status < 3) {
-              return null
+      if (!this.duplicate) {
+        // 先查出src是否正在播放中
+        const filename = this.url2Filename(src)
+        for (let i = 0; i < this.viewCount; i++) {
+          const player = this.getPlayerById(this.videos[i].id)
+          // 报错的窗口 或 正在播放中的窗口
+          if (player.status > 0) {
+            if (filename === player.filename) {
+              // 说明正在播放
+              if (player.status < 3) {
+                return null
+              }
+              // player.status = 3 说明出错了，可以继续使用这个窗口
+              return player
             }
-            // player.status = 3 说明出错了，可以继续使用这个窗口
-            return player
           }
         }
       }
@@ -319,6 +322,14 @@ export default {
     },
     togglefill() {
       this.filled = !this.filled
+    },
+    url2Filename(url) {
+      if (url) {
+        const vlist = url.split('?')
+        return vlist[0].split('\\').pop().split('/').pop()
+      } else {
+        return null
+      }
     }
   },
   created() {
