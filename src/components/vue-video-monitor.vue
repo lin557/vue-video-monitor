@@ -31,19 +31,48 @@
     </div>
     <div class="vvm-control">
       <ul>
-        <li><a @click="splitView(1)">1</a></li>
-        <li><a @click="splitView(4)">4</a></li>
-        <li><a @click="splitView(6)">6</a></li>
-        <li><a @click="splitView(8)">8</a></li>
-        <li><a @click="splitView(9)">9</a></li>
-        <li><a @click="splitView(10)">10</a></li>
-        <li><a @click="splitView(16)">16</a></li>
-        <li><a @click="splitView(25)">25</a></li>
-        <li><a @click="splitView(36)">36</a></li>
-        <li><a @click="splitView(64)">64</a></li>
-        <li><a @click="closeSelected">S</a></li>
-        <li><a @click="closeAll">X</a></li>
-        <li><a @click="togglefill">F</a></li>
+        <li v-if="btnView1">
+          <a class="vvm-icon-s1" @click="splitView(1)"></a>
+        </li>
+        <li v-if="btnView4">
+          <a class="vvm-icon-s4" @click="splitView(4)"></a>
+        </li>
+        <li v-if="btnView6">
+          <a class="vvm-icon-s6" @click="splitView(6)"></a>
+        </li>
+        <li v-if="btnView8">
+          <a class="vvm-icon-s8" @click="splitView(8)"></a>
+        </li>
+        <li v-if="btnView9">
+          <a class="vvm-icon-s9" @click="splitView(9)"></a>
+        </li>
+        <li v-if="btnView10">
+          <a class="vvm-icon-s10" @click="splitView(10)"></a>
+        </li>
+        <li v-if="btnView16">
+          <a class="vvm-icon-s16" @click="splitView(16)"></a>
+        </li>
+        <li v-if="btnView25">
+          <a class="vvm-icon-s25" @click="splitView(25)"></a>
+        </li>
+        <li v-if="btnView36">
+          <a class="vvm-icon-s36" @click="splitView(36)"></a>
+        </li>
+        <li v-if="btnView64">
+          <a class="vvm-icon-s64" @click="splitView(64)"></a>
+        </li>
+        <li v-if="btnView1">
+          <a class="vvm-icon-fill" @click="togglefill"></a>
+        </li>
+        <li v-if="btnViewMute">
+          <a class="vvm-icon-mute" @click="mute"></a>
+        </li>
+        <li v-if="btnViewClose">
+          <a class="vvm-icon-stop" @click="closeSelected"></a>
+        </li>
+        <li v-if="btnViewClear">
+          <a class="vvm-icon-close" @click="closeAll"></a>
+        </li>
       </ul>
     </div>
   </div>
@@ -59,6 +88,24 @@ export default {
     VueVideoPlayer
   },
   props: {
+    closeAfterViewChange: {
+      type: Boolean,
+      default: false
+    },
+    control: {
+      type: Object,
+      default() {
+        return {
+          enabled: true,
+          position: 'bottom',
+          btnViews: [1, 4, 6, 8, 9, 10, 16],
+          btnMute: true,
+          btnClose: true,
+          btnClear: true,
+          btnFill: true
+        }
+      }
+    },
     count: {
       type: Number,
       default() {
@@ -73,19 +120,6 @@ export default {
     focused: {
       type: Boolean,
       default: true
-    },
-    closeAfterViewChange: {
-      type: Boolean,
-      default: false
-    },
-    control: {
-      type: Object,
-      default() {
-        return {
-          enabled: true,
-          position: 'bottom'
-        }
-      }
     }
   },
   data() {
@@ -103,6 +137,45 @@ export default {
     }
   },
   computed: {
+    btnView1() {
+      return this.calcBtnView(1)
+    },
+    btnView4() {
+      return this.calcBtnView(4)
+    },
+    btnView6() {
+      return this.calcBtnView(6)
+    },
+    btnView8() {
+      return this.calcBtnView(8)
+    },
+    btnView9() {
+      return this.calcBtnView(9)
+    },
+    btnView10() {
+      return this.calcBtnView(10)
+    },
+    btnView16() {
+      return this.calcBtnView(16)
+    },
+    btnView25() {
+      return this.calcBtnView(25)
+    },
+    btnView36() {
+      return this.calcBtnView(36)
+    },
+    btnView64() {
+      return this.calcBtnView(64)
+    },
+    btnViewMute() {
+      return this.control.btnMute
+    },
+    btnViewClose() {
+      return this.control.btnClose
+    },
+    btnViewClear() {
+      return this.control.btnClear
+    },
     controlCls() {
       if (this.control.enabled) {
         if (this.control.position === 'top') {
@@ -126,6 +199,13 @@ export default {
     }
   },
   methods: {
+    calcBtnView(value) {
+      if (this.control.btnViews.indexOf(value) === -1) {
+        return false
+      } else {
+        return true
+      }
+    },
     calcCls(index) {
       switch (index) {
         case 0:
@@ -265,6 +345,12 @@ export default {
       })
       return ret
     },
+    mute() {
+      this.videos.forEach((value) => {
+        const player = this.getPlayerById(value.id)
+        player.mute()
+      })
+    },
     play(options) {
       const player = this.getIdleView(options.src)
       if (player) {
@@ -337,6 +423,11 @@ export default {
     this.createView()
   },
   watch: {
+    count(value) {
+      console.log(value)
+      this.viewCount = this.fixViewCount(value)
+      this.createView()
+    },
     viewCount(value) {
       if (value === 1) {
         this.viewMax = null
@@ -354,7 +445,7 @@ export default {
 }
 </script>
 <style lang="scss">
-$controlHeight: 49px;
+$controlHeight: 55px;
 $borderColor: #373d3d;
 
 .vvm-monitor {
@@ -367,29 +458,90 @@ $borderColor: #373d3d;
     height: $controlHeight;
     background: #202020;
     border-top: 1px solid $borderColor;
+    overflow: hidden;
 
     ul {
       list-style-type: none;
       margin: 0;
       padding: 0;
-      overflow: hidden;
     }
 
     li {
       float: left;
+      padding: 11px 10px;
     }
 
     li a {
       display: inline-block;
       vertical-align: middle;
-      color: white;
-      text-align: center;
-      padding: 13px 16px;
-      text-decoration: none;
+      width: 32px;
+      height: 32px;
+
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOAAAABgCAYAAAAEnX45AAASr0lEQVR4nO2dcWwb133Hv7+j4njFti5D3caOVVgWTwbiYTWwNYgcBJODJusySSTtSC06Ne3QIpsknhrbWIC16yynW4ABsdX4KKvtMCxr0g6VkpCUjKLxllnFhthNsLVBm9Q2pcitlLReUCBDkTZxpPvtj7ujHqnj8Y7H41Hm+wC0qbt37/vu+H73fu/37t4jSJoGZm6YFhFFpu2kX07Y5amk36jrYOu3NfrCSySSddqiLoCkNYn6xh+1vg1VKkhX3wPvQ9uNtxjMNwURMNaMt6jtPT9ZzD76v36O86K/kMvMA0A8me6JQt9LeRqp71SW3X0jH66XfrXr3ejzb8Tvfzmrv1RJw03f6/V3bAHjifQ5KFt6YAS/SyiKAhhvI55Izy/kMwe8HOND33SkGeci0q9angbrbyiLoigv1FG/2vVu9Pk34vd306i6r9r1V8o3qIn0KQA9Xgrqkx4rb1ekvtRvJf0SA9x178jNDGghiAMAGNB23Ttyc6X9Ul/qt5p+iQG2xWK7whL3oiH1pX6r6Zf2AWO8FWEHh2K81XWf1K8rC/mM+4BbyPqOGk2qvzCnX4Ddryvf53Ida90HOPQBJRJJ45DjgNc58US6tE0hHLBD5JJS4sl0T3lE027BNlzHWveVXX9pgCHgy+1rIqyKUbXs1c5vs55/FEgXVCKJENkChoCTS1KkiV1AJxdMxM3l8rIfQFOffxTIFlAiiZCmagG99kE2HCf7HBXZTNcm6t/fTV8OQ0gk1yFN1QJW64OU46nPUU6L9UE20zBEFMMAUevLFlAiiZCmagGjptY+yIZ8NlG/S0SOAzYe2QJKJBEiW0CBVh8Ha/XzjwJpgE1EvVzgkjw3kTsYxTBA1PrSBZVIIqSkBTTWjLcUJVybNNaMt9z2tbL+7r6RDyuK8oK4rd5hcMMwbnt17vSLlcrWyucfhX7J1aa29/zEqWD1xE1D6kv9VtMvMUBr6rT5EPXn3aaHk/pSv9X0N/gbC/nMAQL0eisToHuZFk7qS/1W0neMghbymbH4gPYl/NpoRxv9diDlNXp7dW3typVvn/6510N86xMqX9gw9N30yvcH1fei6bbPoG55/s2rX3FmbIlEEj5yHLBFcVodqNErA9VCvcoY1upQfs+tLcjFkNQX6Y20HnIgXiKJELk+oEQSIY59wM57P1OXpcls7CWirsxOeFoiqtX143/62VD0l/Ini/ryxtscbIiCdvQOn0M4q8MAwPzSmSnXEHar6+/uGwlV/9W5056W6AqTZgjChIXfcysxwN29w6es1WGqVhS/2BWbAP3VM1NjTmlaXb+zb6SoX29DsQ2bAH1x7rSjfqOQBiikt0+o/Y//4ua2G5SfIYTKZ2NXwtV3je3Lz361ZGCy1fU/+NG/LOqH1UrZRrj6rrH9p9/5iueB6XojDXCdYhTUXjYprMon5u20DJTUN7eF6SLaeTdiGS6JN9aHIdyWjao3TlpSP1p9SSTIcUCJJEI8PYrW2T+6E0C39efy4uzkBYc0AxUOd0zvlTJtLM5Ozng4xi5LIO1a8xXL7KW8ktbF1QCtijQNwQCs7ecBDC7OTq4Im6crZDMDYLCWwnX2j54AcKRs2zKAo04Vu0L6waBGUEO+4jWTz/pJKlKtBey2PucBrADYKWw7DOCowzHllfJ8gPK1A1gGcEHQbgcw3dk/2i7eAMqMxD7m9gDaNeVrtZLdlfb7IZ5InwDQvpDPDJZtv10o0/mFfGaibP9OmL+Pff0mFvIZ8WYpaRKqGeAyzJauaFSd/aPPw6xgR+BggIuzkzW1dhU4UmZkhwGctP7shmXsnf2jYoWcEctgteI14Tdfa9uJWvVs4on0YawbUPm+AZgt7DLMm+LJeCK9cyGfOWrt3wngeevYGav8AwA+GLRckvrjGoRZnJ284OBm1eNOus9LojIXt1x7Wfgu9s1KbgAOeXjWryHfk1iv+G5U0z+JytfZNvD9C/nMfuu76B7bhnvEajlnALRbhutVX9IgfL0PaN3hbffrvLB9QPhu9wWXAUxUqKh+NG+HWaFstwowWyMxCGK7fBfKXEanvqofPOdrXYMBmBV+BuvGW5PuQj5zoXxGLcv1bAcwI7iUMwAG4on0wEI+U9QV3FJ7m102SRPh2QAt47Pv8AAwUSGpWPGOdPaPdjtEDH/gvYhFF8pmxsHNtQ2lvNJ3w3TX9pdt96rvKV8hWLVslbdaH9BVfyGfqRRh3eCS1pjGz/WXhIincUCrgj2P9YpYHgE8DzPSaX/EwMtJBOM81lsVABjo7B/9qdUyOtG9ODtJgm63S1o/OOYrXBsgWGsraUGqtoCWayW6lRuGAKxKJ26bEYI1gSKCi7OTE7BaW6Gyt1tlKg8sFF3TxdnJo539o7bL2A4zelkrbvkewXq08Uhn/yhgusuwyjwN4Lx1HmGyHHC/JAJcW0DBtQLMH3C/jzG1urcElqHbhiS6WnaLW3PEswJ+8m3Hel9LvOnUbVjC6uPZeYr5Lwtu6wxQjJaKaWX/rwmp5oKK7uP+Su5VZ//ogOjmWcMFgX/4zv7RaZd8RTfX1ui2A0JCMCjI0yhe8j2JUvd7EKXXrfzvoJwEgHgi/Xw8kbZd36Pl+wGciCfS07CCLy79SkmEVHNBxTvtsuVeFbH6RHa6gfL9WA9K1EqlfAEhCLQ4OzlhGac9SC+mq3lc0ku+lmtaUrnFdAGfwtlw7EI+czSeSK9gvVXtFo3Lip7a47SAORwRtvsrqZF6TUs4g/UnVQDT8GYQfBjiJEwjFN3NGZQN0FvshzlMIQ4VTNThWcyw8q1K+RMwwvZiv7jC/gsIcOORNA5XAxRaOFesylj3Crk4O3kUzo+7OaVdsdJ6Su+jDL7zta6HfAZUUhX5OpJEEiHSACWSCCkaoNvCifXGSUvqR6sviYaiAdoLB1oTB4WCnbfTQohS39xmTZwUCnbejViIUuKNogFak8bOA+gJoxIK823OO01Q2+r61qS58wB6wjBCYb7ReXGC3laBiKp+IilX+TRvwtyY9RdzmRNT6psIc4OGoh/1nKBANNMSetGsx5SHgSbmtek4OLKtLotz2liLNJbPhVmJVtfffWg0FP0o5wIVkQYopG/2iU4l9adSJbme1wdsVgOU6wM2EfJm2HrIcUCJJELk+oASSYTIFrAJ6bz3M+8DgI6+4R77/yDfAWBX/+H32/kzs+NH0njq9TZEQ9idGPn9GCl3AnQfgB0AbQeYAFwF+CpAc1jjs4W5zP9sVv2O3uFzULb0ACAwzgn/I8B3IuPtqx29w6Gt/CSpjQ1RUDWhHQPhvYWc7uk9vvbBI7+x9Z3VRxhrswv5yVCe4tiTHLvTAH8OwCEGXyGmMyD8GIwVirFhMHaQQdtBGACwF8DTCuixS7lT/7mZ9KNen7BRyCiokL5ctCuhfZUJD4AwU8jqru+UqcnRPkB5GMA+ZuMu2wD9GrEbXUnNqpQ0R4rxtcvPZM64pj+Y7mVDeQDgPgL0yzk9UGVrlH7U6xM2EmmAQnonUTWlTYMxAPBThVzGcX5LNTE2AeIH7b8dDHAcwPlCTi+fEtAzalIrAIiDMVjI677eN1QT2gAI0wAWCjld3Yz6fuhIHf6dtrW1DzntW43FXlrKTrwJAB29wwyDupe+fTqyKSqkAa7jGIQpZPVBEGYAuk9NaSWLrqj96b1qUvs+iB8E499AOA4ApCjF0hfy+nGAvwOgW01qNZ2VmtT+C0AcoL1+K79VhhmA9gKIW3k1tX5H33BPR+9wzTWgDav7oPC806cNq6UzYbfg+oCVAk/1DkJ50RE/FaOgRSNkDNhG2JXQPgeFfgRgHwGPFvL6PeIxalKbVJPpJwGgkMv8CQGPWtu/4eck1GT67wHcoayt7izkTr3i9yIUzyF36hVlbXUngDusPJtWf2luan7pzFTNTcMq2q6AcLz4Af7PUefMFC3NTc3XqiOpLxsMUE1pQ2pSO6cmtXNgGheNkJn/HcArYGPock7/qw25EbYB9GdqUvsFAFhpcgA+0ZXU/s5LgfYkx+4E6PNMSF2am3ot2OkBl+amXmNCCqDPm3n71+/qHdkdT2lJr5pqSutRU1qPH/2gLeBSduJKIauPF7L6OAG7ALwXDkbY0TvM9tCEJHpKDHBP35FbwHQa5msrPQBPi0aIGB1jZfVjhfykY4u27rrid9WkZr57RsZxAG8y4SE1OXZrtQKZ0UaaW8jquaAnZ2PmRXNWJNO3Pt+g3EGMrJpKP+h2LAB0pbQvCsMAvvWD0pXSHmfGp4jwLyB8OWw9STBKDNBoe1cF+LfAGC/kdCrk9N8r5E69IrqjZMSOuWUoGGFPPKlNXc5O/gDg02DcwMyfcju2M6H9IYBDpBhfC35qpVh5HrI0fOkXspknQDgOpgk3I1RT6b9mxsNgjBey+rwf/aAuKFBqfJez+qcddZrABfXbT7qeHxbw/CRMSWAmqT1VNS1wloAhNTXWSQo/CdA1Itx/4MDxioP/CvE9AFbcQv1qUmO3T6XjrDxXLA3f+oWsPu5mhF0J7SEwPQLGuBmE8qcf1AX1YnyAdEGbDV+Pogmt26GiERrOaQl4EcBvwuChy89M/hjMzwG4eWXbL26qrEB3M+A6zhYEM2+6u1b9SkaoJtJHmPAPlYzPu35tVDK+VbQ9DsKBVbTJ1ZCaFN+PohWy+qA9TqgmtadA9LcA31eejg1+EQoBhFsAgImvEgjGqnETgDcqZL+DQlzDgIAfArjLJUlV/UJWH1dTGiwjBLFigOhENeOrpm+5hb5dUDWpfR/APqeWbyk7cQXAlZJtAd1cSX2p6VlQ0QgBBkCDAL9fTBMjenENAAM7rE1vAEDMgFsLuB3M4S3vxVgB0fag+qIRMhhejK+afkffcA8Y59pibd+tmk9JkbEPjJcu5yq7nSU6vcMMwoGo+4ESk5rfhhDdUYAfBlPJRD/M166VCtFWAGAov6ycKxPFuIJTGxwzb3ZpAbzrE9PPin8o7Djm5l/fJ4Q/AuO7hbwul5zepAR6G2JjS4iiK7pGW/YQAAJeBwBmxEF4p8rA9lWDiy1m3TEYOwi4GlRfTaY/C9BXwBiHArLd0UI24xr296CPQl7vqaZfLEdCm/ea1ka6oM1F8PcB7XFCMTADQCGkzf0wB9MJKsA/qpLZVTLcXMRgmHmziwFU1+9KjX0aoH+03c5q0VF/+uEjo6DNRR0MkAedjJAJXQDejjG+vufg2IcAxInI3QCZzoK4L3CZKkHcB6azteqrKW2Imf+5vM/n2Qir6UtajuAv5CoAmKfBNAhi2NHRLVuudr9z7QOPXZzVl9SkZi0aSfOuWRH9hwGM70mN3XYpe+oFpzSFnF6TC7UnNXYbQH+gEB2uRT+eSH+ciJ6oFHApj46Wu6Ne9BuBdEGbi5IWMGb86r8BvAnCuONAd0J7Tu1LOy23vNcgY7vYEl679oFvLuT0YWv//QCevpw99bhbYcwXWPl7hsF1n5jWzJO/5/aSbCV9NaX1ENG/Vot2ii2h6ar6028E0gVtLkoM8GL+n35J4I8CNAdzmvTSD+EuxOg5NaltuIvHDCgATzMpD4vuaMeBP98KhkGK8UUvBSJDeQyEITWhOb6HWAvWu3lDZCiP1aK/itUrYBryMtRQyOrjzPwQW8Env/qS1sLXxLzxpPYxIjwCxm4QZgziv1GYPgHGMQLdzcx3QAFZ7pgVHcXTMY594WL+y5e86nQltWcYSAG0N8jrQABgPgDOLxOQvZzTDzarvj0O6MdFtKOgfiKnkubCVxBmIad/K7aGjwD4FhgDikHPFXeyQXZUUE2O3WqsKl+wW8I1WvP8Lh4AWBX1NYBf3tM3fIufY0XMY/llAK95Nb5m0A8T6YI2F76joBdn9aVCTv84mI8C2AbGMQBgxRxg7kgN7wJ4WonxMzEDDwL8FMqGKLxQyOk7ASwYsbYVP+/i2cRTWtKIta3AnBJip9/jG63fqDX7muFtCMk6tT8Jk8+cNBTlIwxYQYWY9a/SA8LrhmIcupjXX7fmlMkBOFQ+vUVVjZyugjBDjKyaHJvtOpjurXZM18F0r5ocmyVGFoSZIPOxNFK/UesTdvQOszhHqCRaAi/Oot47diNuxCNgPlvI6c9WTGf2CbcVcrrvGb/UVPqTYGUIMF8XYuAMAT90mBZwCOY8LmdBxpOFbOaJIOfWaH1xDUEvM6P56QP6zTss5FokpWyq1ZHU1Og94NgQwJ90TkFPgNaeLGQnQxnsboR+LesTLp2ZIvtdQqfv9v+bfU7Q65FNNTO2VbHPArj/1kOHt18zjB28tqoYMeONX//qrTd+/uzXQ+1HNUL/1TNTYx0HR77ke31AwgG371HPBSpxZlO1gJLNj2wBS9l0V6NeNwxZEbxTz5u0vO6l/D9b8yaj/JJw4gAAAABJRU5ErkJggg==);
+      filter: grayscale(1) brightness(1.5);
     }
 
-    li a:hover {
+    li:hover {
       background-color: #111;
+      a {
+        filter: brightness(1.5);
+      }
+    }
+
+    .vvm-icon-s1 {
+      background-position: 0px 0px;
+    }
+
+    .vvm-icon-s4 {
+      background-position: -32px 0px;
+    }
+
+    .vvm-icon-s6 {
+      background-position: -64px 0px;
+    }
+
+    .vvm-icon-s8 {
+      background-position: -96px 0px;
+    }
+
+    .vvm-icon-s9 {
+      background-position: -128px 0px;
+    }
+
+    .vvm-icon-s10 {
+      background-position: -160px 0px;
+    }
+
+    .vvm-icon-s16 {
+      background-position: -192px 0px;
+    }
+
+    .vvm-icon-s25 {
+      background-position: 0px -32px;
+    }
+
+    .vvm-icon-s36 {
+      background-position: -32px -32px;
+    }
+
+    .vvm-icon-s64 {
+      background-position: -64px -32px;
+    }
+
+    .vvm-icon-mute {
+      background-position: 0px -64px;
+    }
+
+    .vvm-icon-stop {
+      background-position: -32px -64px;
+    }
+
+    .vvm-icon-close {
+      background-position: -64px -64px;
+    }
+
+    .vvm-icon-fill {
+      background-position: -96px -64px;
     }
   }
 

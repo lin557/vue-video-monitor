@@ -195,6 +195,9 @@ export default {
     handleDblClick() {
       this.$emit('dblclick', this)
     },
+    mute() {
+      this.player.volume(0)
+    },
     play(option) {
       this.close()
       const options = videojs.mergeOptions(playerOptions, option)
