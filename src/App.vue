@@ -41,11 +41,19 @@ export default {
       controlBar: {
         enabled: true,
         position: 'bottom',
-        btnViews: [1, 4, 6, 8, 9, 10, 16, 25, 36, 64],
-        btnMute: true,
-        btnClose: true,
-        btnClear: true,
-        btnFill: true
+        button: [
+          '1',
+          '4',
+          '6',
+          '8',
+          '9',
+          '10',
+          '16',
+          'mute',
+          'stop',
+          'clear',
+          'fill'
+        ]
       },
       selectItem:
         'http://hlsflv-liveshow.bdstatic.com/live/stream_bduid_4889051902_4693249733-L3.flv',
@@ -173,7 +181,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 30px;
+  margin-top: 20px;
 
   .demo {
     padding: 6px;
@@ -200,7 +208,7 @@ body {
 .video-view {
   width: 100%;
   max-width: 1280px;
-  height: 880px;
+  height: 900px;
 }
 
 .center {

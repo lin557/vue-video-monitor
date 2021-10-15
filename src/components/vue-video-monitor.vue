@@ -61,17 +61,24 @@
         <li v-if="btnView64">
           <a class="vvm-icon-s64" @click="splitView(64)"></a>
         </li>
-        <li v-if="btnView1">
-          <a class="vvm-icon-fill" @click="togglefill"></a>
+        <li
+          v-if="btnViewMute | btnViewStop | btnViewClear"
+          class="vvm-separator"
+        >
+          <span></span>
         </li>
         <li v-if="btnViewMute">
           <a class="vvm-icon-mute" @click="mute"></a>
         </li>
-        <li v-if="btnViewClose">
-          <a class="vvm-icon-stop" @click="closeSelected"></a>
+        <li v-if="btnViewStop">
+          <a class="vvm-icon-stop" @click="stop"></a>
         </li>
         <li v-if="btnViewClear">
-          <a class="vvm-icon-close" @click="closeAll"></a>
+          <a class="vvm-icon-clear" @click="clear"></a>
+        </li>
+        <li v-if="btnViewFill" class="vvm-separator"><span></span></li>
+        <li v-if="btnViewFill">
+          <a class="vvm-icon-fill" @click="togglefill"></a>
         </li>
       </ul>
     </div>
@@ -98,11 +105,19 @@ export default {
         return {
           enabled: true,
           position: 'bottom',
-          btnViews: [1, 4, 6, 8, 9, 10, 16],
-          btnMute: true,
-          btnClose: true,
-          btnClear: true,
-          btnFill: true
+          button: [
+            '1',
+            '4',
+            '6',
+            '8',
+            '9',
+            '10',
+            '16',
+            'fill',
+            'mute',
+            'stop',
+            'clear'
+          ]
         }
       }
     },
@@ -138,43 +153,46 @@ export default {
   },
   computed: {
     btnView1() {
-      return this.calcBtnView(1)
+      return this.calcBtnView('1')
     },
     btnView4() {
-      return this.calcBtnView(4)
+      return this.calcBtnView('4')
     },
     btnView6() {
-      return this.calcBtnView(6)
+      return this.calcBtnView('6')
     },
     btnView8() {
-      return this.calcBtnView(8)
+      return this.calcBtnView('8')
     },
     btnView9() {
-      return this.calcBtnView(9)
+      return this.calcBtnView('9')
     },
     btnView10() {
-      return this.calcBtnView(10)
+      return this.calcBtnView('10')
     },
     btnView16() {
-      return this.calcBtnView(16)
+      return this.calcBtnView('16')
     },
     btnView25() {
-      return this.calcBtnView(25)
+      return this.calcBtnView('25')
     },
     btnView36() {
-      return this.calcBtnView(36)
+      return this.calcBtnView('36')
     },
     btnView64() {
-      return this.calcBtnView(64)
+      return this.calcBtnView('64')
+    },
+    btnViewFill() {
+      return this.calcBtnView('fill')
     },
     btnViewMute() {
-      return this.control.btnMute
+      return this.calcBtnView('mute')
     },
-    btnViewClose() {
-      return this.control.btnClose
+    btnViewStop() {
+      return this.calcBtnView('stop')
     },
     btnViewClear() {
-      return this.control.btnClear
+      return this.calcBtnView('clear')
     },
     controlCls() {
       if (this.control.enabled) {
@@ -200,7 +218,7 @@ export default {
   },
   methods: {
     calcBtnView(value) {
-      if (this.control.btnViews.indexOf(value) === -1) {
+      if (this.control.button.indexOf(value) === -1) {
         return false
       } else {
         return true
@@ -252,19 +270,11 @@ export default {
     /**
      * 关闭所有视频
      */
-    closeAll() {
+    clear() {
       this.videos.forEach((value) => {
         const player = this.getPlayerById(value.id)
         player.close()
       })
-    },
-    closeSelected() {
-      const selectPlayer = this.getPlayerById(
-        VUE_PLAYER_PREFIX + this.selected.id
-      )
-      if (selectPlayer) {
-        selectPlayer.close()
-      }
     },
     createView() {
       for (let i = 0; i < this.viewCount; i++) {
@@ -406,6 +416,17 @@ export default {
         }
       }
     },
+    /**
+     * 关闭选中的视频窗口
+     */
+    stop() {
+      const selectPlayer = this.getPlayerById(
+        VUE_PLAYER_PREFIX + this.selected.id
+      )
+      if (selectPlayer) {
+        selectPlayer.close()
+      }
+    },
     togglefill() {
       this.filled = !this.filled
     },
@@ -447,6 +468,7 @@ export default {
 <style lang="scss">
 $controlHeight: 55px;
 $borderColor: #373d3d;
+$controlColor: #202020;
 
 .vvm-monitor {
   width: 100%;
@@ -456,7 +478,7 @@ $borderColor: #373d3d;
   .vvm-control {
     width: 100%;
     height: $controlHeight;
-    background: #202020;
+    background: $controlColor;
     border-top: 1px solid $borderColor;
     overflow: hidden;
 
@@ -486,6 +508,19 @@ $borderColor: #373d3d;
       a {
         filter: brightness(1.5);
       }
+    }
+
+    .vvm-separator {
+      padding: 15px 5px;
+      span {
+        display: block;
+        width: 2px;
+        height: 24px;
+        background: $borderColor;
+      }
+    }
+    .vvm-separator:hover {
+      background-color: $controlColor;
     }
 
     .vvm-icon-s1 {
@@ -536,7 +571,7 @@ $borderColor: #373d3d;
       background-position: -32px -64px;
     }
 
-    .vvm-icon-close {
+    .vvm-icon-clear {
       background-position: -64px -64px;
     }
 
