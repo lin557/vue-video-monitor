@@ -49,7 +49,7 @@ To include vue-video-monitor on your website or web application, use any of the 
 </template>
 
 <script>
-import VueVideoMonitor from 'vue-video-monitor.vue'
+import VueVideoMonitor from 'vue-video-monitor'
 
 export default {
   components: {
