@@ -2,11 +2,11 @@
   <div id="app">
     <div class="video-view center">
       <VueVideoMonitor
-        :count="viewCount"
+        :count="4"
         :control="controlBar"
         :closeAfterViewChange="false"
         :focused="true"
-        :duplicate="false"
+        :duplicate="true"
         ref="monitor"
       />
       <div class="demo">
@@ -37,7 +37,6 @@ export default {
   },
   data() {
     return {
-      viewCount: 4,
       controlBar: {
         enabled: true,
         position: 'bottom',
@@ -168,7 +167,7 @@ export default {
       this.$refs.monitor.togglefill()
     },
     setViewCount(value) {
-      this.viewCount = value
+      this.$refs.monitor.splitView(value)
     }
   }
 }

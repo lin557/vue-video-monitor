@@ -259,13 +259,10 @@ export default {
       }
     },
     clearMaxClass() {
-      if (!this.viewMax) {
-        this.viewMax.$el.classList.remove('vvp-max')
-      }
-      // this.videos.forEach((value) => {
-      //   const player = this.getPlayerById(value.id)
-      //   player.$el.classList.remove('vvp-max')
-      // })
+      this.videos.forEach((value) => {
+        const player = this.getPlayerById(value.id)
+        player.$el.classList.remove('vvp-max')
+      })
     },
     /**
      * 关闭所有视频
@@ -383,18 +380,10 @@ export default {
         return
       }
       if (this.viewMax === player) {
-        // this.viewMax = null
+        this.viewMax = null
       } else {
         this.viewMax = player
       }
-
-      // this.viewMax = !this.viewMax
-      // // 如果组件带有最大化样式
-      // // 取消最大化
-      // if (this.viewMax) {
-      //   this.clearMaxClass()
-      //   player.$el.classList.add('vvp-max')
-      // }
     },
     /**
      * 分割屏幕
@@ -445,7 +434,6 @@ export default {
   },
   watch: {
     count(value) {
-      console.log(value)
       this.viewCount = this.fixViewCount(value)
       this.createView()
     },

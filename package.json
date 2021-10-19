@@ -1,7 +1,18 @@
 {
   "name": "vue-video-monitor",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "Multi-window video player",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lin557/vue-video-monitor"
+  },
+  "engines": {
+    "node": ">=14",
+    "npm": ">=6"
+  },
+  "author": "lin557",
+  "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
