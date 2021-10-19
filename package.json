@@ -1,8 +1,9 @@
 {
   "name": "vue-video-monitor",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Multi-window video player",
   "private": false,
+  "main": "dist/vue-video-monitor.umd.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/lin557/vue-video-monitor"
@@ -16,7 +17,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build-bundle": "vue-cli-service build --target lib --name vue-video-monitor ./src/components/index.js"
   },
   "dependencies": {
     "core-js": "^3.18.3",
@@ -33,14 +35,12 @@
     "@vue/cli-service": "~4.5.0",
     "@vue/eslint-config-prettier": "^6.0.0",
     "babel-eslint": "^10.1.0",
-    "babel-plugin-dynamic-import-node": "^2.3.3",
     "eslint": "^6.7.2",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-vue": "^6.2.2",
     "prettier": "^2.2.1",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "script-ext-html-webpack-plugin": "^2.1.5",
     "vue-template-compiler": "^2.6.11"
   }
 }

@@ -24,13 +24,17 @@ module.exports = {
   // sub-path here. For example, if your app is deployed at
   // https://www.foobar.com/my-app/
   // then change this to '/my-app/'
+
+  // pages: {
+  //   index: {
+  //     entry:
+  //       process.env.NODE_ENV === 'production'
+  //         ? './src/components/vue-video-monitor/index.js'
+  //         : './src/main.js'
+  //   }
+  // },
   publicPath: BASE_URL,
   lintOnSave: true,
-  // vue-echarts
-  // transpileDependencies: [
-  //   'vue-echarts',
-  //   'resize-detector'
-  // ],
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
@@ -40,103 +44,22 @@ module.exports = {
         '@': resolve('src'),
         '@c': resolve('src/components')
       }
+    },
+    // 打包排除这些组件
+    externals: {
+      'flv.js': 'flv.js',
+      'videojs-fetch-flv': 'videojs-fetch-flv',
+      'videojs-flvjs-es6': 'videojs-flvjs-es6',
+      'video.js': 'video.js',
+      'videojs-contextmenu-pt': 'videojs-contextmenu-pt'
     }
-  },
-  chainWebpack: (config) => {
-    // it can improve the speed of the first screen, it is recommended to turn on preload
-    config.plugin('preload').tap(() => [
-      {
-        rel: 'preload',
-        // to ignore runtime.js
-        // https://github.com/vuejs/vue-cli/blob/dev/packages/@vue/cli-service/lib/config/app.js#L171
-        fileBlacklist: [/\.map$/, /hot-update\.js$/, /runtime\..*\.js$/],
-        include: 'initial'
-      }
-    ])
-
-    // when there are many pages, it will cause too many meaningless requests
-    config.plugins.delete('prefetch')
-
-    config.when(process.env.NODE_ENV !== 'development', (config) => {
-      config
-        .plugin('ScriptExtHtmlWebpackPlugin')
-        .after('html')
-        .use('script-ext-html-webpack-plugin', [
-          {
-            // `runtime` must same as runtimeChunk name. default is `runtime`
-            inline: /runtime\..*\.js$/
-          }
-        ])
-        .end()
-      config.optimization.splitChunks({
-        chunks: 'all',
-        cacheGroups: {
-          libs: {
-            name: 'chunk-libs',
-            test: /[\\/]node_modules[\\/]/,
-            priority: 10,
-            chunks: 'initial' // only package third parties that are initially dependent
-          },
-          videojs: {
-            name: 'chunk-videojs',
-            priority: 20,
-            test: /[\\/]node_modules[\\/]_?video.js(.*)/
-          },
-          // echarts: {
-          //   name: 'chunk-echarts',
-          //   priority: 20,
-          //   test: /[\\/]node_modules[\\/]_?echarts(.*)/
-          // },
-          // elementUI: {
-          //   name: 'chunk-elementUI', // split elementUI into a single package
-          //   priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-          //   test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
-          // },
-          commons: {
-            name: 'chunk-commons',
-            test: resolve('src/components'), // can customize your rules
-            minChunks: 3, //  minimum common number
-            priority: 5,
-            reuseExistingChunk: true
-          }
-        }
-      })
-      // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
-      config.optimization.runtimeChunk('single')
-    })
   },
   // 设为false打包时不生成.map文件
   productionSourceMap: false,
-
-  // 这里写你调用接口的基础路径，来解决跨域，如果设置了代理，那你本地开发环境的axios的baseUrl要写为 '' ，即空字符串
-  // devServer: {
-  //   // https://github.com/chimurai/http-proxy-middleware#proxycontext-config
-  //   // proxy: 'http://127.0.0.1:8090/'
-  //   proxy: {
-  //     // '/baidumap': {
-  //     //   target: 'http://api.map.baidu.com/',
-  //     //   changeOrigin: true,
-  //     //   pathRewrite: {
-  //     //     '^/baidumap': ''
-  //     //   }
-  //     // },
-  //     '': {
-  //       target: 'http://127.0.0.1:8090/',
-  //       changeOrigin: true
-  //     }
-  //   }
-  // },
   // 配置编译后的文件存放路径
-  assetsDir: 'app'
-  // 压缩js
-  // configureWebpack: config => {
-  //   if (isProduction) {
-  //     config.plugins.push(new CompressionWebpackPlugin({
-  //       algorithm: 'gzip',
-  //       test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
-  //       threshold: 10240,
-  //       minRatio: 0.8
-  //     }))
-  //   }
-  // }
+  assetsDir: 'app',
+  // 强制打包成lib时css内联进js文件
+  css: {
+    extract: false
+  }
 }

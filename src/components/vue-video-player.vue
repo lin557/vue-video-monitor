@@ -325,7 +325,7 @@ export default {
 
         this.procgress++
         if (this.procgress >= ERR_MAX_AUDIO_COUNT) {
-          console.warn(
+          window.console.warn(
             this.lastOptions.src +
               ' has no audio data, video will auto reset to play.'
           )

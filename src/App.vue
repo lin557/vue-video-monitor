@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import VueVideoMonitor from './components/vue-video-monitor.vue'
+import VueVideoMonitor from './components'
 
 export default {
   name: 'App',

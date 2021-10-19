@@ -1,0 +1,10 @@
+/docs/icon
+/public
+
+.browserslistrc
+.eslintrc.js
+.prettierrc.js
+
+babel.config.js
+package-lock.json
+vue.config.js

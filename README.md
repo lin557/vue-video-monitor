@@ -102,6 +102,17 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.video-view {
+  width: 100%;
+  max-width: 1280px;
+  height: 900px;
+}
+
+.center {
+  margin: auto;
+}
+</style>
 ```
 
 
