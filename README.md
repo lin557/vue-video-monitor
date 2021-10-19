@@ -1,7 +1,16 @@
+
 # vue-video-monitor
 
 Multi-window vue video player, mp4/flv/m3u8
 
+<p align="center">
+  <a href="https://www.npmjs.org/package/vue-video-monitor">
+    <img src="https://img.shields.io/npm/v/vue-video-monitor.svg">
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg">
+  </a>
+</p>
 ![image](docs/images/20211019153047.png)
 
 ## Table of Contents
