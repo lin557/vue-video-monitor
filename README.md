@@ -6,6 +6,7 @@
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg">
   </a>
 </p>
+
 # vue-video-monitor
 
 Multi-window vue video player, mp4/flv/m3u8
