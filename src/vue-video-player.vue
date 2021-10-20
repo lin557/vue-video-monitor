@@ -161,12 +161,10 @@ export default {
       this.player.reset()
       this.clearTimer()
       // 如果在录像中 需要停止录像功能
-      if (
-        this.player &&
-        this.player.fetchFlv &&
-        this.player.fetchFlv().fetching
-      ) {
-        this.player.fetchFlv().stop(false)
+      if (this.player.fetchFlv && this.player.fetchObj) {
+        if (this.player.fetchObj.fetching) {
+          this.player.fetchObj.stop(false)
+        }
       }
       this.status = 0
       this.procgress = 0
@@ -229,17 +227,23 @@ export default {
       }
       this.status = 1
       const type = this.getMediaType(options.src)
-      if (options.record.enabled) {
-        if (type === 'rtmp/mp4' || type === 'application/x-mpegURL') {
-          // rtmp/m3u8不支持下载
-        } else {
-          this.player.fetchFlv({ isLive: options.record.isLive })
-        }
-      }
       if (options.content) {
         this.player.contextmenuUI({
           content: options.content
         })
+      }
+      if (this.player.fetchObj) {
+        if (options.record.enabled) {
+          if (type === 'rtmp/mp4' || type === 'application/x-mpegURL') {
+            // rtmp/m3u8不支持下载
+            this.player.fetchObj.hide()
+          } else {
+            this.player.fetchObj.show()
+          }
+          this.player.fetchObj.updateIsLive(options.record.isLive)
+        } else {
+          this.player.fetchObj.hide()
+        }
       }
       this.filename = this.url2Filename(options.src)
       let info = this.filename
@@ -305,6 +309,11 @@ export default {
           this.status = 3
           this.error = 'connect timeout'
         }, ERR_NETWORK_TIMEOUT)
+      }
+      if (!this.player.fetchObj) {
+        this.player.fetchObj = this.player.fetchFlv({
+          isLive: true
+        })
       }
     })
     this.player.on('loadeddata', () => {
