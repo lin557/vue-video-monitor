@@ -25,7 +25,9 @@ Multi-window vue video player, mp4/flv/m3u8
 
 ## Installation
 
-VHS supports HLS and DASH and is built into video.js 7, 所以不用安装videojs-contrib-hls， videojs 6可以使用videojs-http-streaming
+VHS supports HLS and DASH and is built into video.js 7, So there is no need to install videojs-contrib-hls.
+
+If you use videojs 6 you need videojs-http-streaming.
 
 ```sh
 npm install --save vue-video-monitor
@@ -59,6 +61,8 @@ To include vue-video-monitor on your website or web application, use any of the 
 
 <script>
 import VueVideoMonitor from 'vue-video-monitor'
+// or
+// import VueVideoMonitor from 'vue-video-monitor/src/vue-video-monitor.vue'
 
 export default {
   components: {
@@ -128,6 +132,8 @@ export default {
 
 ## Attributes
 
+
+
 | Property      | Description | Type    | Default              |
 | :------------ | ---------- | :------ | :------------------- |
 | closeAfterViewChange | Whether to close the playing video when the view window changes | boolean | false |
@@ -150,24 +156,70 @@ export default {
 
 ## Methods
 
-| Method Name       | Description                              | Param                                     |
-| ----------------- | ---------------------------------------- | ----------------------------------------- |
-| clear()           | Close all video players that are playing | -                                         |
-| mute()            | Mute all players                         | -                                         |
-| play(options)     | Play video                               | object                                    |
-| splitView(uCount) | Modify the number of video players       | number, 1, 4, 6, 8, 9, 10, 16, 25, 36, 64 |
-| stop()            | Stop a video player that is playing      | -                                         |
-| togglefill()      | Switch whether the video screen is full  | -                                         |
+
+
+### clear()
+
+Close all video players that are playing
 
 
 
-### play() options object
+### mute()
 
-| Property | Description                                           | Type    | Default                                        |
-| -------- | ----------------------------------------------------- | ------- | ---------------------------------------------- |
-| hasAudio | With audio                                            | boolean | true                                           |
-| record   | Record control parameters(Does not support rtmp/m3u8) | object  | {<br />enabled: true,<br />isLive: true<br />} |
-| src      | Media source                                          | string  | -                                              |
+Mute all players
+
+
+
+### play(options) 
+
+Play video, The options object format is as follows:
+
+| Property | Description                                                | Type    | Default                                        |
+| -------- | ---------------------------------------------------------- | ------- | ---------------------------------------------- |
+| content  | Context menu                                               | array   | null                                           |
+| hasAudio | With audio                                                 | boolean | true                                           |
+| info     | Display customized text message, Default display file name | string  | null                                           |
+| record   | Record control parameters(Does not support rtmp/m3u8)      | object  | {<br />enabled: true,<br />isLive: true<br />} |
+| src      | Media source                                               | string  | -                                              |
+
+The format of the **content** array parameter is as follows:
+
+```js
+content: [
+  {
+    // A plain old link.
+    href: 'https://www.brightcove.com/',
+    label: 'Brightcove'
+  },
+  {
+    // A link with a listener. Its `href` will automatically be `#`.
+    label: 'Example Link',
+    listener: function () {
+      alert('you clicked the example link!')
+    }
+  }
+]
+```
+
+
+
+### splitView(uCount)
+
+Modify the number of video players.
+
+Type: number, Only the following values are supported: 1, 4, 6, 8, 9, 10, 16, 25, 36, 64
+
+
+
+### stop()
+
+Stop a video player that is playing
+
+
+
+### togglefill()
+
+Switch whether the video screen is full
 
 
 

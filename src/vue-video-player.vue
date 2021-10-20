@@ -171,6 +171,26 @@ export default {
       this.status = 0
       this.procgress = 0
     },
+    createHeader(player) {
+      const video = player.el()
+      // Create div element
+      const div = document.createElement('div')
+      div.classList.add('vjs-header')
+      const infoEl = document.createElement('div')
+      // infoEl.classList.add('vjs-h-info')
+      // infoEl.innerText = ''
+      div.appendChild(infoEl)
+      const speedEl = document.createElement('div')
+      speedEl.classList.add('vjs-h-speed')
+      div.appendChild(speedEl)
+      player.header = {
+        el: {
+          info: infoEl,
+          speed: speedEl
+        }
+      }
+      video.appendChild(div)
+    },
     getMediaType(url) {
       if (url === null) {
         return 'video/x-flv'
@@ -216,26 +236,30 @@ export default {
           this.player.fetchFlv({ isLive: options.record.isLive })
         }
       }
-      // this.player.contextmenuUI({
-      //   content: [
-      //     {
-      //       // A plain old link.
-      //       href: 'https://www.brightcove.com/',
-      //       label: 'Brightcove'
-      //     },
-      //     {
-      //       // A link with a listener. Its `href` will automatically be `#`.
-      //       label: 'Example Link',
-      //       listener: function () {
-      //         alert('you clicked the example link!')
-      //       }
-      //     }
-      //   ]
-      // })
+      if (options.content) {
+        this.player.contextmenuUI({
+          content: options.content
+        })
+      }
       this.filename = this.url2Filename(options.src)
+      let info = this.filename
+      if (options.info && options.info !== '') {
+        info = options.info
+      }
+      this.updateInfo(info)
       this.player.src([{ type: type, src: options.src }])
       this.player.autoplay()
       this.lastOptions = options
+    },
+    updateInfo(info) {
+      if (this.player.header) {
+        this.player.header.el.info.innerText = info
+      }
+    },
+    updateSpeed(speed) {
+      if (this.player.header) {
+        this.player.header.el.speed.innerText = speed
+      }
     },
     url2Filename(url) {
       if (url) {
@@ -254,6 +278,8 @@ export default {
         this.close()
       })
     }
+    // 创建顶部显示条
+    this.createHeader(this.player)
     // 正常加载流程 flv
     // ready -> loadstart -> loadedmetadata -> loadeddata -> playing
     // rtmp连接成功 但没图像
@@ -272,26 +298,14 @@ export default {
           this.status = 3
           this.error = e.msg
         })
+        flvPlayer.on(flvjs.Events.STATISTICS_INFO, (info) => {
+          this.updateSpeed(info.speed.toFixed(0) + ' kb/s')
+        })
         this.timer = this.player.setTimeout(() => {
           this.status = 3
           this.error = 'connect timeout'
         }, ERR_NETWORK_TIMEOUT)
       }
-      // console.log(FLVJS_EVENTS_STATISTICS_INFO)
-      // flv增加错误事件绑定
-      // if (this.player.tech_) {
-      //   const flvPlayer = this.player.tech_.flvPlayer
-      //   if (flvPlayer) {
-      //     flvPlayer.on(FLVJS_EVENTS_ERROR, () => {
-      //       this.status = 3
-      //       console.log(this)
-      //       // that.showErrInfo(vid, 'connect timeout.');
-      //     })
-      //     flvPlayer.on(FLVJS_EVENTS_STATISTICS_INFO, (info) => {
-      //       console.log(info.speed.toFixed(0) + ' kb/s')
-      //     })
-      //   }
-      // }
     })
     this.player.on('loadeddata', () => {
       this.status = 2
@@ -346,7 +360,12 @@ export default {
     //   console.log('loadedmetadata')
     // })
     // 开启音频 loadedmetadata progress > 5 canplay = false playing=false 重连
-
+    // this.player.on('useractive', () => {
+    //   console.log('useractive')
+    // })
+    // this.player.on('userinactive', () => {
+    //   console.log('userinactive')
+    // })
     this.player.on('error', (e) => {
       // 播放mp4/m3u8时可以捕获 flv不行
       this.status = 3
@@ -503,6 +522,55 @@ export default {
         padding-left: 6px;
       }
     }
+  }
+
+  .vjs-header {
+    position: absolute;
+    top: 0px;
+    display: none;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 100%;
+    height: 3em;
+    background-color: rgba(43, 51, 63, 0.7);
+    pointer-events: none;
+
+    > div {
+      display: inline-block;
+      line-height: 3em;
+      padding: 0 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .vjs-h-speed {
+      min-width: 75px;
+      text-align: right;
+    }
+  }
+
+  .vjs-has-started .vjs-header {
+    display: flex;
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0.1s, opacity 0.1s;
+  }
+
+  .vjs-has-started .vjs-fetch-flv-ctx {
+    top: 25px !important;
+  }
+
+  .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-header {
+    visibility: visible;
+    opacity: 0;
+    pointer-events: none;
+    transition: visibility 1s, opacity 1s;
+  }
+
+  .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-fetch-flv-ctx {
+    top: 0px !important;
+    transition: top 1.1s;
   }
 
   .vvp-hide {

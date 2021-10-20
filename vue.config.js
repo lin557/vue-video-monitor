@@ -16,6 +16,14 @@ const resolve = (dir) => {
 // iview-admin线上演示打包路径： https://file.iviewui.com/admin-dist/
 const BASE_URL = process.env.NODE_ENV === 'production' ? '' : ''
 
+const externalsData = {
+  'flv.js': 'flv.js',
+  'videojs-fetch-flv': 'videojs-fetch-flv',
+  'videojs-flvjs-es6': 'videojs-flvjs-es6',
+  'video.js': 'video.js',
+  'videojs-contextmenu-pt': 'videojs-contextmenu-pt'
+}
+
 module.exports = {
   // Project deployment base
   // By default we assume your app will be deployed at the root of a domain,
@@ -46,13 +54,7 @@ module.exports = {
       }
     },
     // 打包排除这些组件
-    externals: {
-      'flv.js': 'flv.js',
-      'videojs-fetch-flv': 'videojs-fetch-flv',
-      'videojs-flvjs-es6': 'videojs-flvjs-es6',
-      'video.js': 'video.js',
-      'videojs-contextmenu-pt': 'videojs-contextmenu-pt'
-    }
+    externals: process.env.NODE_ENV === 'production' ? externalsData : {}
   },
   // 设为false打包时不生成.map文件
   productionSourceMap: false,
