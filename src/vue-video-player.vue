@@ -496,9 +496,10 @@ export default {
 
   .vvp-focus {
     position: absolute;
+    width: 100%;
+    height: 100%;
     border: 1px green solid;
-    width: calc(100% - 2px);
-    height: calc(100% - 2px);
+    box-sizing: border-box;
     z-index: 6;
     display: none;
     pointer-events: none;
