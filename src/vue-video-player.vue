@@ -81,7 +81,16 @@ const playerOptions = {
   record: {
     enabled: false,
     isLive: true
-  }
+  },
+  // 上下文菜单
+  content: null,
+  data: {
+    // 唯一值
+    unique: null,
+    // 用户数据
+    user: null
+  },
+  hasAudio: true
 }
 
 export default {
@@ -207,6 +216,9 @@ export default {
         return 'video/x-flv'
       }
     },
+    getOptions() {
+      return this.lastOptions
+    },
     handleClick() {
       this.$emit('click', this)
     },
@@ -246,6 +258,9 @@ export default {
         }
       }
       this.filename = this.url2Filename(options.src)
+      if (options.data.unique == null) {
+        options.data.unique = this.filename
+      }
       let info = this.filename
       if (options.info && options.info !== '') {
         info = options.info

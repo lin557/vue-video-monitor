@@ -164,6 +164,12 @@ Close all video players that are playing
 
 
 
+### getPlaying(unique)
+
+The player object corresponding to the specified identifier. About **unique** param , Specified by the **options.data.unique** parameter of the play() method, if not specified, the file name in options.src is used by default.
+
+
+
 ### mute()
 
 Mute all players
@@ -174,13 +180,16 @@ Mute all players
 
 Play video, The options object format is as follows:
 
-| Property | Description                                                | Type    | Default                                        |
-| -------- | ---------------------------------------------------------- | ------- | ---------------------------------------------- |
-| content  | Context menu                                               | array   | null                                           |
-| hasAudio | With audio                                                 | boolean | true                                           |
-| info     | Display customized text message, Default display file name | string  | null                                           |
-| record   | Record control parameters(Does not support rtmp/m3u8)      | object  | {<br />enabled: true,<br />isLive: true<br />} |
-| src      | Media source                                               | string  | -                                              |
+| Property | Description                                                | Type    | Default                                         |
+| -------- | ---------------------------------------------------------- | ------- | ----------------------------------------------- |
+| content  | Context menu                                               | array   | null                                            |
+| data     | user data                                                  | object  | {<br />unique: filename<br />other: null<br />} |
+| hasAudio | With audio                                                 | boolean | true                                            |
+| info     | Display customized text message, Default display file name | string  | null                                            |
+| record   | Record control parameters(Does not support rtmp/m3u8)      | object  | {<br />enabled: true,<br />isLive: true<br />}  |
+| src      | Media source                                               | string  | -                                               |
+
+
 
 The format of the **content** array parameter is as follows:
 
@@ -199,6 +208,19 @@ content: [
     }
   }
 ]
+```
+
+
+
+The format of the **data** object parameter is as follows:
+
+```json
+{
+  // Default src filename
+  unique: filename,
+  // User private data
+  other: null
+}
 ```
 
 

@@ -22,6 +22,7 @@
           </option>
         </select>
         <button v-on:click="play">play</button>
+        <button @click="test">test</button>
       </div>
     </div>
   </div>
@@ -102,11 +103,18 @@ export default {
           }
         ],
         hasAudio: true,
+        data: {
+          unique: 'xxoo'
+        },
         record: {
           enabled: true,
           isLive: true
         }
       })
+    },
+    test() {
+      const player = this.$refs.monitor.getPlaying('xxoo')
+      console.log(player)
     },
     togglefill() {
       this.$refs.monitor.togglefill()

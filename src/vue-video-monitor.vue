@@ -308,7 +308,7 @@ export default {
           const player = this.getPlayerById(this.videos[i].id)
           // 报错的窗口 或 正在播放中的窗口
           if (player.status > 0) {
-            if (filename === player.filename) {
+            if (filename === player.getOptions().data.unique) {
               // 说明正在播放
               if (player.status < 3) {
                 return null
@@ -340,6 +340,27 @@ export default {
       return null
     },
     /**
+     * 通过播放信息判断是否正在播放
+     */
+    getPlaying(unique) {
+      if (unique == null) {
+        return null
+      }
+      for (let i = 0; i < this.viewCount; i++) {
+        const player = this.getPlayerById(this.videos[i].id)
+        // 报错的窗口 或 正在播放中的窗口
+        if (player.status > 0) {
+          if (unique === player.getOptions().data.unique) {
+            // 说明正在播放
+            if (player.status < 3) {
+              return player
+            }
+          }
+        }
+      }
+      return null
+    },
+    /**
      * 判断视图窗口是否存在
      */
     isViewExist(id) {
@@ -365,15 +386,7 @@ export default {
       }
     },
     playerClick(player) {
-      const lastFocus = this.getPlayerById(VUE_PLAYER_PREFIX + this.selected.id)
-      if (lastFocus) {
-        lastFocus.focused = false
-      }
-      this.selected.id = player.index
-      this.selected.player = player
-      if (this.focused) {
-        player.focused = true
-      }
+      this.setFocus(player)
     },
     playerDbClick(player) {
       if (this.viewCount === 1) {
@@ -383,6 +396,17 @@ export default {
         this.viewMax = null
       } else {
         this.viewMax = player
+      }
+    },
+    setFocus(player) {
+      const lastFocus = this.getPlayerById(VUE_PLAYER_PREFIX + this.selected.id)
+      if (lastFocus) {
+        lastFocus.focused = false
+      }
+      this.selected.id = player.index
+      this.selected.player = player
+      if (this.focused) {
+        player.focused = true
       }
     },
     /**
@@ -454,7 +478,7 @@ export default {
 }
 </script>
 <style lang="scss">
-$controlHeight: 55px;
+$controlHeight: 56px;
 $borderColor: #373d3d;
 $controlColor: #202020;
 
@@ -468,6 +492,7 @@ $controlColor: #202020;
     height: $controlHeight;
     background: $controlColor;
     border-top: 1px solid $borderColor;
+    box-sizing: border-box;
     overflow: hidden;
 
     ul {
@@ -570,7 +595,7 @@ $controlColor: #202020;
 
   &.vvm-control-top {
     .vvm-view {
-      top: $controlHeight + 1px;
+      top: $controlHeight;
     }
     .vvm-control {
       border-top: none;
@@ -591,7 +616,7 @@ $controlColor: #202020;
   }
 
   .vvm-view {
-    height: calc(100% - #{$controlHeight + 1px});
+    height: calc(100% - #{$controlHeight});
     overflow: hidden;
     position: relative;
 
