@@ -5,6 +5,7 @@
         v-for="(item, index) in videos"
         :key="item.id"
         :ref="item.id"
+        :connect="item.connect"
         :index="index"
         :tag="item.id"
         :class="item.cls"
@@ -279,7 +280,12 @@ export default {
         if (!this.isViewExist(id)) {
           this.videos.push({
             id: id,
-            cls: this.calcCls(i)
+            cls: this.calcCls(i),
+            connect: {
+              // 开启出错时自动重连
+              auto: true,
+              interval: 15
+            }
           })
         }
       }

@@ -96,6 +96,16 @@ const playerOptions = {
 export default {
   name: 'VueVideoPlayer',
   props: {
+    // 当出错时自动重连
+    connect: {
+      type: Object,
+      default() {
+        return {
+          auto: false,
+          interval: 15
+        }
+      }
+    },
     options: {
       type: Object,
       default() {
@@ -406,6 +416,10 @@ export default {
             break
           case 3:
             this.error = 'MEDIA_ERR_DECODE'
+            // 重连接
+            if (this.connect && this.connect.auto) {
+              this.play(this.lastOptions)
+            }
             break
           case 4:
             this.error = 'network failed or format no supported'
@@ -489,6 +503,7 @@ export default {
         display: table-cell;
         vertical-align: middle;
         font-family: VideoJs;
+        text-align: center;
         opacity: 0.8;
         &:before {
           display: block;
