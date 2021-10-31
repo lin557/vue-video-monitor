@@ -3450,12 +3450,12 @@ var es_regexp_exec = __webpack_require__("ac1f");
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.string.split.js
 var es_string_split = __webpack_require__("1276");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"44b5e618-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-player.vue?vue&type=template&id=eb87abf2&
-var vue_video_playervue_type_template_id_eb87abf2_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vvp-player",class:_vm.fillCls,on:{"click":_vm.handleClick,"dblclick":_vm.handleDblClick}},[_c('div',{staticClass:"vvp-shade",class:_vm.loadingCls},[_c('div',{staticClass:"vjs-loading-spinner"}),_c('div',{staticClass:"vvp-error-ctx"},[_c('span',{ref:"vvperror"},[_vm._v(_vm._s(_vm.error))])])]),_c('div',{staticClass:"vvp-focus",class:_vm.focusCls}),_c('video',{ref:"player",staticClass:"video-js vjs-big-play-centered vjs-16-9",attrs:{"controls":"","muted":"","preload":"none"},domProps:{"muted":true}},[_c('p',{staticClass:"vjs-no-js"},[_vm._v(" Please consider upgrading to a web browser that supports HTML5 video ")])])])}
-var vue_video_playervue_type_template_id_eb87abf2_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"44b5e618-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-player.vue?vue&type=template&id=91f908b6&
+var vue_video_playervue_type_template_id_91f908b6_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vvp-player",class:_vm.fillCls,on:{"click":_vm.handleClick,"dblclick":_vm.handleDblClick}},[_c('div',{staticClass:"vvp-shade",class:_vm.loadingCls},[_c('div',{staticClass:"vjs-loading-spinner"}),_c('div',{staticClass:"vvp-error-ctx"},[_c('div',{staticClass:"vvp-error-text"},[_c('span',{domProps:{"innerHTML":_vm._s(_vm.error)}}),_c('p',{staticClass:"vvp-error-button",on:{"click":function($event){return _vm.close()}}},[_vm._v("[close]")])])])]),_c('div',{staticClass:"vvp-focus",class:_vm.focusCls}),_c('video',{ref:"player",staticClass:"video-js vjs-big-play-centered vjs-16-9",attrs:{"controls":"","muted":"","preload":"none"},domProps:{"muted":true}},[_c('p',{staticClass:"vjs-no-js"},[_vm._v(" Please consider upgrading to a web browser that supports HTML5 video ")])])])}
+var vue_video_playervue_type_template_id_91f908b6_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/vue-video-player.vue?vue&type=template&id=eb87abf2&
+// CONCATENATED MODULE: ./src/vue-video-player.vue?vue&type=template&id=91f908b6&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.fill.js
 var es_array_fill = __webpack_require__("cb29");
@@ -3495,6 +3495,9 @@ var external_flv_js_default = /*#__PURE__*/__webpack_require__.n(external_flv_js
 
 
 
+//
+//
+//
 //
 //
 //
@@ -3702,6 +3705,9 @@ var playerOptions = {
       };
       video.appendChild(div);
     },
+    getInfo: function getInfo() {
+      return '[ ' + this.lastOptions.info + ' ]';
+    },
     getMediaType: function getMediaType(url) {
       if (url === null) {
         return 'video/x-flv';
@@ -3780,6 +3786,8 @@ var playerOptions = {
 
       if (options.info && options.info !== '') {
         info = options.info;
+      } else {
+        options.info = info;
       }
 
       this.updateInfo(info);
@@ -3839,14 +3847,14 @@ var playerOptions = {
       if (flvPlayer) {
         flvPlayer.on(external_flv_js_default.a.Events.ERROR, function (errType, errDetails, e) {
           _this.status = 3;
-          _this.error = e.msg;
+          _this.error = _this.getInfo() + '<br/>(error-flv) ' + e.msg;
         });
         flvPlayer.on(external_flv_js_default.a.Events.STATISTICS_INFO, function (info) {
           _this.updateSpeed(info.speed.toFixed(0) + ' kb/s');
         });
         _this.timer = _this.player.setTimeout(function () {
           _this.status = 3;
-          _this.error = 'connect timeout';
+          _this.error = _this.getInfo() + '<br/>(error-flv) connect timeout';
         }, ERR_NETWORK_TIMEOUT);
       }
 
@@ -3922,39 +3930,43 @@ var playerOptions = {
       if (_this.player.error) {
         switch (_this.player.error().code) {
           case 0:
-            _this.error = 'MEDIA_ERR_CUSTOM';
+            _this.error = _this.getInfo() + '<br/>MEDIA_ERR_CUSTOM';
             break;
 
           case 1:
-            _this.error = 'MEDIA_ERR_ABORTED';
+            _this.error = _this.getInfo() + '<br/>MEDIA_ERR_ABORTED';
             break;
 
           case 2:
-            _this.error = 'MEDIA_ERR_NETWORK';
+            _this.error = _this.getInfo() + '<br/>MEDIA_ERR_NETWORK';
             break;
 
           case 3:
-            _this.error = 'MEDIA_ERR_DECODE'; // 重连接
+            _this.error = _this.getInfo() + '<br/>MEDIA_ERR_DECODE'; // 重连接 这里用定时器 防止跟上面的flv.error冲突
 
             if (_this.connect && _this.connect.auto) {
-              _this.play(_this.lastOptions);
+              _this.player.setTimeout(function () {
+                window.console.warn(_this.lastOptions.src + ' will reset and reconnect. ' + _this.player.error().message);
+
+                _this.play(_this.lastOptions);
+              }, 1000);
             }
 
             break;
 
           case 4:
-            _this.error = 'network failed or format no supported';
+            _this.error = _this.getInfo() + '<br/>network failed or format no supported';
             break;
 
           case 5:
-            _this.error = 'MEDIA_ERR_ENCRYPTED';
+            _this.error = _this.getInfo() + '<br/>MEDIA_ERR_ENCRYPTED';
             break;
 
           default:
-            _this.error = 'error';
+            _this.error = _this.getInfo() + '<br/>error';
         }
       } else {
-        _this.error = e.type;
+        _this.error = _this.getInfo() + '<br/>' + e.type;
       }
     }); // this.player.on('abort', () => {
     //   console.log('abort')
@@ -4090,8 +4102,8 @@ function normalizeComponent (
 
 var component = normalizeComponent(
   src_vue_video_playervue_type_script_lang_js_,
-  vue_video_playervue_type_template_id_eb87abf2_render,
-  vue_video_playervue_type_template_id_eb87abf2_staticRenderFns,
+  vue_video_playervue_type_template_id_91f908b6_render,
+  vue_video_playervue_type_template_id_91f908b6_staticRenderFns,
   false,
   null,
   null,
@@ -4700,7 +4712,7 @@ module.exports = fails(function () {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".vvp-player{width:352px;height:288px;position:relative}.vvp-player .vvp-shade{position:absolute;width:100%;height:100%;z-index:3;background-color:#000;font-family:VideoJs}.vvp-player .vvp-shade:before{display:block;content:\"\";font-size:50px;color:grey;opacity:.8;top:calc(50% - 25px);left:calc(50% - 25px);position:absolute}.vvp-player .vvp-shade.vjs-waiting:before{content:\"\"}.vvp-player .vvp-shade .vvp-error-ctx{display:none}.vvp-player .vvp-shade.vvp-error{display:table}.vvp-player .vvp-shade.vvp-error:before{content:\"\"}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx{display:table-cell;vertical-align:middle;font-family:VideoJs;text-align:center;opacity:.8}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx:before{display:block;content:\"\";font-size:48px;color:grey}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx span{font-size:12px;color:#aaa;position:absolute;top:calc(50% + 25px);width:100%;left:0}.vvp-player .vvp-focus{position:absolute;width:100%;height:100%;border:1px solid green;box-sizing:border-box;z-index:6;display:none;pointer-events:none}.vvp-player .vvp-focus-show{display:block}.vvp-player .video-js{width:100%;height:100%}.vvp-player .video-js.vjs-playing .vjs-tech{pointer-events:none}.vvp-player .video-js .vjs-close-button{position:relative;height:100%;top:3px;font-size:.85em}.vvp-player .video-js .vvp-live .vjs-live-display{padding-left:6px}.vvp-player .vjs-header{position:absolute;top:0;display:none;flex-flow:row nowrap;justify-content:space-between;width:100%;height:3em;background-color:rgba(43,51,63,.7);pointer-events:none}.vvp-player .vjs-header>div{display:inline-block;line-height:3em;padding:0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vvp-player .vjs-header .vjs-h-speed{min-width:75px;text-align:right}.vvp-player .vjs-has-started .vjs-header{display:flex;visibility:visible;opacity:1;transition:visibility .1s,opacity .1s}.vvp-player .vjs-has-started .vjs-fetch-flv-ctx{top:25px!important}.vvp-player .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-header{visibility:visible;opacity:0;pointer-events:none;transition:visibility 1s,opacity 1s}.vvp-player .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-fetch-flv-ctx{top:0!important;transition:top 1.1s}.vvp-player .vvp-hide{display:none}.vvp-player.vvp-fill .video-js .vjs-tech{-o-object-fit:fill;object-fit:fill}", ""]);
+exports.push([module.i, ".vvp-player{width:352px;height:288px;position:relative}.vvp-player .vvp-shade{position:absolute;width:100%;height:100%;z-index:3;background-color:#000;font-family:VideoJs}.vvp-player .vvp-shade:before{display:block;content:\"\";font-size:50px;color:grey;opacity:.8;top:calc(50% - 25px);left:calc(50% - 25px);position:absolute}.vvp-player .vvp-shade.vjs-waiting:before{content:\"\"}.vvp-player .vvp-shade .vvp-error-ctx{display:none}.vvp-player .vvp-shade.vvp-error{display:table}.vvp-player .vvp-shade.vvp-error:before{content:\"\"}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx{display:table-cell;vertical-align:middle;font-family:VideoJs;text-align:center;opacity:.8}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx:before{display:block;content:\"\";font-size:48px;color:grey}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx .vvp-error-text{font-size:12px;color:#aaa;position:absolute;top:calc(50% + 25px);width:100%;left:0}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx .vvp-error-button{cursor:pointer;width:100px;margin:0 auto;padding-top:5px}.vvp-player .vvp-focus{position:absolute;width:100%;height:100%;border:1px solid green;box-sizing:border-box;z-index:6;display:none;pointer-events:none}.vvp-player .vvp-focus-show{display:block}.vvp-player .video-js{width:100%;height:100%}.vvp-player .video-js.vjs-playing .vjs-tech{pointer-events:none}.vvp-player .video-js .vjs-close-button{position:relative;height:100%;top:3px;font-size:.85em}.vvp-player .video-js .vvp-live .vjs-live-display{padding-left:6px}.vvp-player .vjs-header{position:absolute;top:0;display:none;flex-flow:row nowrap;justify-content:space-between;width:100%;height:3em;background-color:rgba(43,51,63,.7);pointer-events:none}.vvp-player .vjs-header>div{display:inline-block;line-height:3em;padding:0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vvp-player .vjs-header .vjs-h-speed{min-width:75px;text-align:right}.vvp-player .vjs-has-started .vjs-header{display:flex;visibility:visible;opacity:1;transition:visibility .1s,opacity .1s}.vvp-player .vjs-has-started .vjs-fetch-flv-ctx{top:25px!important}.vvp-player .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-header{visibility:visible;opacity:0;pointer-events:none;transition:visibility 1s,opacity 1s}.vvp-player .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-fetch-flv-ctx{top:0!important;transition:top 1.1s}.vvp-player .vvp-hide{display:none}.vvp-player.vvp-fill .video-js .vjs-tech{-o-object-fit:fill;object-fit:fill}", ""]);
 // Exports
 module.exports = exports;
 

@@ -6,7 +6,7 @@
         :control="controlBar"
         :closeAfterViewChange="false"
         :focused="true"
-        :duplicate="true"
+        :duplicate="false"
         ref="monitor"
       />
       <div class="demo">
@@ -103,9 +103,9 @@ export default {
           }
         ],
         hasAudio: true,
-        data: {
-          unique: 'xxoo'
-        },
+        // data: {
+        //   unique: 'xxoo'
+        // },
         record: {
           enabled: true,
           isLive: true
