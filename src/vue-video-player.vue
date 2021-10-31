@@ -9,10 +9,10 @@
     <div class="vvp-shade" :class="loadingCls">
       <div class="vjs-loading-spinner"></div>
       <div class="vvp-error-ctx">
-        <div class="vvp-error-text">
-          <span v-html="error"></span>
-          <p class="vvp-error-button" @click="close()">[close]</p>
+        <div class="vvp-error-button">
+          <span @click="close()"></span>
         </div>
+        <div class="vvp-error-text" v-html="error"></div>
       </div>
     </div>
     <div class="vvp-focus" :class="focusCls"></div>
@@ -211,8 +211,8 @@ export default {
       }
       video.appendChild(div)
     },
-    getInfo() {
-      return '[ ' + this.lastOptions.info + ' ]'
+    getError(error) {
+      return '<p>' + this.lastOptions.info + '</p><p>' + error + '</p>'
     },
     getMediaType(url) {
       if (url === null) {
@@ -333,14 +333,14 @@ export default {
       if (flvPlayer) {
         flvPlayer.on(flvjs.Events.ERROR, (errType, errDetails, e) => {
           this.status = 3
-          this.error = this.getInfo() + '<br/>(error-flv) ' + e.msg
+          this.error = this.getError('(flv) ' + e.msg)
         })
         flvPlayer.on(flvjs.Events.STATISTICS_INFO, (info) => {
           this.updateSpeed(info.speed.toFixed(0) + ' kb/s')
         })
         this.timer = this.player.setTimeout(() => {
           this.status = 3
-          this.error = this.getInfo() + '<br/>(error-flv) connect timeout'
+          this.error = this.getError('(flv)  connect timeout')
         }, ERR_NETWORK_TIMEOUT)
       }
       if (!this.player.fetchObj) {
@@ -414,16 +414,16 @@ export default {
       if (this.player.error) {
         switch (this.player.error().code) {
           case 0:
-            this.error = this.getInfo() + '<br/>MEDIA_ERR_CUSTOM'
+            this.error = this.getError('MEDIA_ERR_CUSTOM')
             break
           case 1:
-            this.error = this.getInfo() + '<br/>MEDIA_ERR_ABORTED'
+            this.error = this.getError('MEDIA_ERR_ABORTED')
             break
           case 2:
-            this.error = this.getInfo() + '<br/>MEDIA_ERR_NETWORK'
+            this.error = this.getError('MEDIA_ERR_NETWORK')
             break
           case 3:
-            this.error = this.getInfo() + '<br/>MEDIA_ERR_DECODE'
+            this.error = this.getError('MEDIA_ERR_DECODE')
             // 重连接 这里用定时器 防止跟上面的flv.error冲突
             if (this.connect && this.connect.auto) {
               this.player.setTimeout(() => {
@@ -433,21 +433,20 @@ export default {
                     this.player.error().message
                 )
                 this.play(this.lastOptions)
-              }, 1000)
+              }, 1200)
             }
             break
           case 4:
-            this.error =
-              this.getInfo() + '<br/>network failed or format no supported'
+            this.error = this.getError('network failed or format no supported')
             break
           case 5:
-            this.error = this.getInfo() + '<br/>MEDIA_ERR_ENCRYPTED'
+            this.error = this.getError('MEDIA_ERR_ENCRYPTED')
             break
           default:
-            this.error = this.getInfo() + '<br/>error'
+            this.error = this.getError('unknow error')
         }
       } else {
-        this.error = this.getInfo() + '<br/>' + e.type
+        this.error = this.getError(e.type)
       }
     })
     // this.player.on('abort', () => {
@@ -534,14 +533,24 @@ export default {
           position: absolute;
           top: calc(50% + 25px);
           width: 100%;
-          left: 0;
+
+          p {
+            margin: 5px 0;
+          }
         }
 
         .vvp-error-button {
-          cursor: pointer;
-          width: 100px;
-          margin: 0 auto;
-          padding-top: 5px;
+          position: absolute;
+          top: calc(50% - 24px);
+          width: 100%;
+
+          span {
+            cursor: pointer;
+            display: block;
+            height: 48px;
+            width: 48px;
+            margin: 0 auto;
+          }
         }
       }
     }

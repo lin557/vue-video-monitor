@@ -49,6 +49,7 @@ export default {
           '9',
           '10',
           '16',
+          '25',
           'mute',
           'stop',
           'clear',
