@@ -5,6 +5,7 @@
     :class="fillCls"
     @click="handleClick"
     @dblclick="handleDblClick"
+    ref="vvplayer"
   >
     <div class="vvp-shade" :class="loadingCls">
       <div class="vjs-loading-spinner"></div>
@@ -16,17 +17,19 @@
       </div>
     </div>
     <div class="vvp-focus" :class="focusCls"></div>
-    <video
-      class="video-js vjs-big-play-centered vjs-16-9"
-      ref="player"
-      controls
-      muted
-      preload="none"
-    >
-      <p class="vjs-no-js">
-        Please consider upgrading to a web browser that supports HTML5 video
-      </p>
-    </video>
+    <!-- <div>
+      <video
+        class="video-js vjs-big-play-centered vjs-16-9"
+        ref="player"
+        controls
+        muted
+        preload="none"
+      >
+        <p class="vjs-no-js">
+          Please consider upgrading to a web browser that supports HTML5 video
+        </p>
+      </video>
+    </div> -->
   </div>
 </template>
 <script>
@@ -130,6 +133,7 @@ export default {
   },
   data() {
     return {
+      id: null,
       player: null,
       // 0=空闲 1=请求中 2=播放中/缓冲中 3=错误
       status: 0,
@@ -174,22 +178,27 @@ export default {
   },
   methods: {
     clearTimer() {
-      if (this.timer) {
+      if (this.timer && this.player) {
         this.player.clearTimeout(this.timer)
         this.timer = null
       }
     },
     close() {
-      this.player.reset()
-      this.clearTimer()
-      // 如果在录像中 需要停止录像功能
-      if (this.player.fetchFlv && this.player.fetchObj) {
-        if (this.player.fetchObj.fetching) {
-          this.player.fetchObj.stop(false)
+      if (this.player) {
+        // this.player.reset()
+        // 如果在录像中 需要停止录像功能
+        if (this.player.fetchFlv && this.player.fetchObj) {
+          if (this.player.fetchObj.fetching) {
+            this.player.fetchObj.stop(false)
+          }
         }
       }
+      this.destoryPlayer()
       this.status = 0
+      this.error = ''
+      this.filename = null
       this.procgress = 0
+      this.lastOptions = null
     },
     createHeader(player) {
       const video = player.el()
@@ -210,6 +219,169 @@ export default {
         }
       }
       video.appendChild(div)
+    },
+    createPlayer() {
+      const el = document.createElement('video')
+      el.id = this.id
+      el.className = 'video-js vjs-big-play-centered vjs-16-9'
+      el.setAttribute('preload', null)
+      el.innerHTML =
+        '<p class="vjs-no-js">Please consider upgrading to a web browser that supports HTML5 video</p>'
+      this.$refs.vvplayer.appendChild(el)
+      const options = videojs.mergeOptions(defaults, this.options)
+      this.player = videojs(this.id, options)
+      if (options.controlBar.closeButton) {
+        this.player.controlBar.closeButton.on('close', () => {
+          this.close()
+        })
+      }
+      // 创建顶部显示条
+      this.createHeader(this.player)
+      // 正常加载流程 flv
+      // ready -> loadstart -> loadedmetadata -> loadeddata -> playing
+      // rtmp连接成功 但没图像
+      // ready -> loadstart
+      // rtmp mp4 连接不成功
+      // ready -> error
+      // hls连接不成功
+      // ready -> loadstart -> error
+
+      this.player.on('ready', () => {
+        const flvPlayer = this.player.tech({
+          IWillNotUseThisInPlugins: true
+        }).flvPlayer
+        if (flvPlayer) {
+          flvPlayer.on(flvjs.Events.ERROR, (errType, errDetails, e) => {
+            this.status = 3
+            this.error = this.getError('(flv) ' + e.msg)
+          })
+          flvPlayer.on(flvjs.Events.STATISTICS_INFO, (info) => {
+            this.updateSpeed(info.speed.toFixed(0) + ' kb/s')
+          })
+          this.timer = this.player.setTimeout(() => {
+            this.status = 3
+            this.error = this.getError('(flv) connect timeout')
+          }, ERR_NETWORK_TIMEOUT)
+        }
+        if (!this.player.fetchObj) {
+          this.player.fetchObj = this.player.fetchFlv({
+            isLive: true
+          })
+        }
+      })
+      this.player.on('loadeddata', () => {
+        this.status = 2
+      })
+      this.player.on('durationchange', () => {
+        if (!this.player.controlBar.liveDisplay.hasClass('vjs-hidden')) {
+          // 实时关掉 播放暂停按钮
+          this.player.controlBar.playToggle.hide()
+          this.player.controlBar.liveDisplay.addClass('vvp-live')
+        } else {
+          this.player.controlBar.liveDisplay.removeClass('vvp-live')
+        }
+      })
+      this.player.on('pause', () => {
+        // 不允许隐藏时暂停
+        this.player.play()
+      })
+      // this.player.on('playing', () => {
+      //   // console.log('playing')
+      //   // 一直执行
+      // })
+      this.player.on('progress', () => {
+        // console.log('progress')
+        if (this.autoAudio && this.lastOptions.hasAudio) {
+          // 如果 m3u8 关闭这个功能
+          if (this.filename) {
+            if (this.filename.split('.').pop().toLowerCase() === 'm3u8') {
+              this.autoAudio = false
+            }
+          }
+
+          this.procgress++
+          if (this.procgress >= ERR_MAX_AUDIO_COUNT) {
+            window.console.warn(
+              this.lastOptions.src +
+                ' has no audio data, video will auto reset to play.'
+            )
+            // 关掉音频 自动重载
+            this.lastOptions.hasAudio = false
+            this.play(this.lastOptions)
+          }
+        }
+      })
+      this.player.on('canplay', () => {
+        // console.log('canplay')
+        this.autoAudio = false
+      })
+      // this.player.on('loadeddata', () => {
+      //   console.log('loadeddata')
+      // })
+      // this.player.on('loadedmetadata', () => {
+      //   console.log('loadedmetadata')
+      // })
+      // 开启音频 loadedmetadata progress > 5 canplay = false playing=false 重连
+      // this.player.on('useractive', () => {
+      //   console.log('useractive')
+      // })
+      // this.player.on('userinactive', () => {
+      //   console.log('userinactive')
+      // })
+      this.player.on('error', (e) => {
+        // 播放mp4/m3u8时可以捕获 flv不行
+        this.status = 3
+        if (this.player.error) {
+          switch (this.player.error().code) {
+            case 0:
+              this.error = this.getError('MEDIA_ERR_CUSTOM')
+              break
+            case 1:
+              this.error = this.getError('MEDIA_ERR_ABORTED')
+              break
+            case 2:
+              this.error = this.getError('MEDIA_ERR_NETWORK')
+              break
+            case 3:
+              this.error = this.getError('MEDIA_ERR_DECODE')
+              // 重连接 这里用定时器 防止跟上面的flv.error冲突
+              if (this.connect && this.connect.auto) {
+                this.player.setTimeout(() => {
+                  window.console.warn(
+                    this.lastOptions.src +
+                      ' will reset and reconnect. ' +
+                      this.player.error().message
+                  )
+                  this.play(this.lastOptions)
+                }, 1280)
+              }
+              break
+            case 4:
+              this.error = this.getError(
+                'network failed or format no supported'
+              )
+              break
+            case 5:
+              this.error = this.getError('MEDIA_ERR_ENCRYPTED')
+              break
+            default:
+              this.error = this.getError('unknow error')
+          }
+        } else {
+          this.error = this.getError(e.type)
+        }
+      })
+      // this.player.on('abort', () => {
+      //   console.log('abort')
+      // })
+      // })
+    },
+    destoryPlayer() {
+      if (this.player) {
+        this.clearTimer()
+        this.player.dispose()
+        this.player = null
+      }
     },
     getError(error) {
       return '<p>' + this.lastOptions.info + '</p><p>' + error + '</p>'
@@ -246,6 +418,7 @@ export default {
     },
     play(option) {
       this.close()
+      this.createPlayer()
       const options = videojs.mergeOptions(playerOptions, option)
       if (!options.hasAudio) {
         this.player.controlBar.volumePanel.hide()
@@ -288,6 +461,16 @@ export default {
       this.player.autoplay()
       this.lastOptions = options
     },
+    randomString(len) {
+      len = len || 32
+      const $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
+      const maxPos = $chars.length
+      let pwd = ''
+      for (let i = 0; i < len; i++) {
+        pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
+      }
+      return pwd
+    },
     updateInfo(info) {
       if (this.player.header) {
         this.player.header.el.info.innerText = info
@@ -307,152 +490,7 @@ export default {
       }
     }
   },
-  mounted() {
-    const options = videojs.mergeOptions(defaults, this.options)
-    this.player = videojs(this.$refs.player, options)
-    if (options.controlBar.closeButton) {
-      this.player.controlBar.closeButton.on('close', () => {
-        this.close()
-      })
-    }
-    // 创建顶部显示条
-    this.createHeader(this.player)
-    // 正常加载流程 flv
-    // ready -> loadstart -> loadedmetadata -> loadeddata -> playing
-    // rtmp连接成功 但没图像
-    // ready -> loadstart
-    // rtmp mp4 连接不成功
-    // ready -> error
-    // hls连接不成功
-    // ready -> loadstart -> error
-
-    this.player.on('ready', () => {
-      const flvPlayer = this.player.tech({
-        IWillNotUseThisInPlugins: true
-      }).flvPlayer
-      if (flvPlayer) {
-        flvPlayer.on(flvjs.Events.ERROR, (errType, errDetails, e) => {
-          this.status = 3
-          this.error = this.getError('(flv) ' + e.msg)
-        })
-        flvPlayer.on(flvjs.Events.STATISTICS_INFO, (info) => {
-          this.updateSpeed(info.speed.toFixed(0) + ' kb/s')
-        })
-        this.timer = this.player.setTimeout(() => {
-          this.status = 3
-          this.error = this.getError('(flv)  connect timeout')
-        }, ERR_NETWORK_TIMEOUT)
-      }
-      if (!this.player.fetchObj) {
-        this.player.fetchObj = this.player.fetchFlv({
-          isLive: true
-        })
-      }
-    })
-    this.player.on('loadeddata', () => {
-      this.status = 2
-    })
-    this.player.on('durationchange', () => {
-      if (!this.player.controlBar.liveDisplay.hasClass('vjs-hidden')) {
-        // 实时关掉 播放暂停按钮
-        this.player.controlBar.playToggle.hide()
-        this.player.controlBar.liveDisplay.addClass('vvp-live')
-      } else {
-        this.player.controlBar.liveDisplay.removeClass('vvp-live')
-      }
-    })
-    this.player.on('pause', () => {
-      // 不允许隐藏时暂停
-      this.player.play()
-    })
-    // this.player.on('playing', () => {
-    //   // console.log('playing')
-    //   // 一直执行
-    // })
-    this.player.on('progress', () => {
-      // console.log('progress')
-      if (this.autoAudio && this.lastOptions.hasAudio) {
-        // 如果 m3u8 关闭这个功能
-        if (this.filename) {
-          if (this.filename.split('.').pop().toLowerCase() === 'm3u8') {
-            this.autoAudio = false
-          }
-        }
-
-        this.procgress++
-        if (this.procgress >= ERR_MAX_AUDIO_COUNT) {
-          window.console.warn(
-            this.lastOptions.src +
-              ' has no audio data, video will auto reset to play.'
-          )
-          // 关掉音频 自动重载
-          this.lastOptions.hasAudio = false
-          this.play(this.lastOptions)
-        }
-      }
-    })
-    this.player.on('canplay', () => {
-      // console.log('canplay')
-      this.autoAudio = false
-    })
-    // this.player.on('loadeddata', () => {
-    //   console.log('loadeddata')
-    // })
-    // this.player.on('loadedmetadata', () => {
-    //   console.log('loadedmetadata')
-    // })
-    // 开启音频 loadedmetadata progress > 5 canplay = false playing=false 重连
-    // this.player.on('useractive', () => {
-    //   console.log('useractive')
-    // })
-    // this.player.on('userinactive', () => {
-    //   console.log('userinactive')
-    // })
-    this.player.on('error', (e) => {
-      // 播放mp4/m3u8时可以捕获 flv不行
-      this.status = 3
-      if (this.player.error) {
-        switch (this.player.error().code) {
-          case 0:
-            this.error = this.getError('MEDIA_ERR_CUSTOM')
-            break
-          case 1:
-            this.error = this.getError('MEDIA_ERR_ABORTED')
-            break
-          case 2:
-            this.error = this.getError('MEDIA_ERR_NETWORK')
-            break
-          case 3:
-            this.error = this.getError('MEDIA_ERR_DECODE')
-            // 重连接 这里用定时器 防止跟上面的flv.error冲突
-            if (this.connect && this.connect.auto) {
-              this.player.setTimeout(() => {
-                window.console.warn(
-                  this.lastOptions.src +
-                    ' will reset and reconnect. ' +
-                    this.player.error().message
-                )
-                this.play(this.lastOptions)
-              }, 1200)
-            }
-            break
-          case 4:
-            this.error = this.getError('network failed or format no supported')
-            break
-          case 5:
-            this.error = this.getError('MEDIA_ERR_ENCRYPTED')
-            break
-          default:
-            this.error = this.getError('unknow error')
-        }
-      } else {
-        this.error = this.getError(e.type)
-      }
-    })
-    // this.player.on('abort', () => {
-    //   console.log('abort')
-    // })
-  },
+  mounted() {},
   watch: {
     status(value) {
       if (value > 1) {
@@ -460,11 +498,11 @@ export default {
       }
     }
   },
+  created() {
+    this.id = 'vvp-' + this.randomString(16)
+  },
   beforeDestroy() {
-    if (this.player) {
-      this.clearTimer()
-      this.player.dispose()
-    }
+    this.destoryPlayer()
   }
 }
 </script>

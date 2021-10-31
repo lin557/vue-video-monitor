@@ -6,6 +6,7 @@
         :key="item.id"
         :ref="item.id"
         :connect="item.connect"
+        :options="item.options"
         :index="index"
         :tag="item.id"
         :class="item.cls"
@@ -285,6 +286,11 @@ export default {
               // 开启出错时自动重连
               auto: true,
               interval: 15
+            },
+            options: {
+              muted: true,
+              controls: true,
+              loop: false
             }
           })
         }
