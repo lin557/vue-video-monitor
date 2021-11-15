@@ -312,30 +312,19 @@ export default {
     /**
      * 获取空闲视图
      */
-    getIdleView(src) {
+    getIdleView(unique) {
       if (!this.duplicate) {
-        // 先查出src是否正在播放中
-        const filename = this.url2Filename(src)
-        for (let i = 0; i < this.viewCount; i++) {
-          const player = this.getPlayerById(this.videos[i].id)
-          // 报错的窗口 或 正在播放中的窗口
-          if (player.status > 0) {
-            if (filename === player.getOptions().data.unique) {
-              // 说明正在播放
-              if (player.status < 3) {
-                return null
-              }
-              // player.status = 3 说明出错了，可以继续使用这个窗口
-              return player
-            }
-          }
+        // 不允许重复
+        const player = this.getPlaying(unique)
+        if (player) {
+          return null
         }
       }
       // 没有在播放
       for (let i = 0; i < this.viewCount; i++) {
         const player = this.getPlayerById(this.videos[i].id)
         // 空的窗口 或 报错的窗口
-        if (player.status === 0) {
+        if (player.status === 0 || player.status === 3) {
           return player
         }
       }
@@ -361,12 +350,9 @@ export default {
       for (let i = 0; i < this.viewCount; i++) {
         const player = this.getPlayerById(this.videos[i].id)
         // 报错的窗口 或 正在播放中的窗口
-        if (player.status > 0) {
+        if (player.status > 0 && player.status < 3) {
           if (unique === player.getOptions().data.unique) {
-            // 说明正在播放
-            if (player.status < 3) {
-              return player
-            }
+            return player
           }
         }
       }
@@ -392,7 +378,12 @@ export default {
       })
     },
     play(options) {
-      const player = this.getIdleView(options.src)
+      let unique = this.url2Filename(options.src)
+      if (options.data && options.data.unique) {
+        unique = options.data.unique
+      }
+      const player = this.getIdleView(unique)
+      // null 说明没有多余的位置 或 已经在播放中
       if (player) {
         player.play(options)
       }

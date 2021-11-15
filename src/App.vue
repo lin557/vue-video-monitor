@@ -104,9 +104,9 @@ export default {
           }
         ],
         hasAudio: true,
-        // data: {
-        //   unique: 'xxoo'
-        // },
+        data: {
+          // unique: this.selectItem + 'aaa'
+        },
         record: {
           enabled: true,
           isLive: true

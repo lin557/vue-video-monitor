@@ -3422,12 +3422,12 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"44b5e618-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-monitor.vue?vue&type=template&id=a47924a2&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"44b5e618-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-monitor.vue?vue&type=template&id=32cf009d&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vvm-monitor",class:_vm.controlCls},[_c('div',{ref:"view",staticClass:"vvm-view",class:_vm.viewCls},[_vm._l((_vm.videos),function(item,index){return _c('vue-video-player',{key:item.id,ref:item.id,refInFor:true,class:item.cls,attrs:{"connect":item.connect,"options":item.options,"index":index,"tag":item.id},on:{"click":_vm.playerClick,"dblclick":_vm.playerDbClick}})}),_c('div',{staticClass:"vvm-border vvm-h vvm-h1"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h2"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h3"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h4"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h5"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h6"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h7"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v1"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v2"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v3"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v4"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v5"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v6"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v7"})],2),_c('div',{staticClass:"vvm-control"},[_c('ul',[(_vm.btnView1)?_c('li',[_c('a',{staticClass:"vvm-icon-s1",on:{"click":function($event){return _vm.splitView(1)}}})]):_vm._e(),(_vm.btnView4)?_c('li',[_c('a',{staticClass:"vvm-icon-s4",on:{"click":function($event){return _vm.splitView(4)}}})]):_vm._e(),(_vm.btnView6)?_c('li',[_c('a',{staticClass:"vvm-icon-s6",on:{"click":function($event){return _vm.splitView(6)}}})]):_vm._e(),(_vm.btnView8)?_c('li',[_c('a',{staticClass:"vvm-icon-s8",on:{"click":function($event){return _vm.splitView(8)}}})]):_vm._e(),(_vm.btnView9)?_c('li',[_c('a',{staticClass:"vvm-icon-s9",on:{"click":function($event){return _vm.splitView(9)}}})]):_vm._e(),(_vm.btnView10)?_c('li',[_c('a',{staticClass:"vvm-icon-s10",on:{"click":function($event){return _vm.splitView(10)}}})]):_vm._e(),(_vm.btnView16)?_c('li',[_c('a',{staticClass:"vvm-icon-s16",on:{"click":function($event){return _vm.splitView(16)}}})]):_vm._e(),(_vm.btnView25)?_c('li',[_c('a',{staticClass:"vvm-icon-s25",on:{"click":function($event){return _vm.splitView(25)}}})]):_vm._e(),(_vm.btnView36)?_c('li',[_c('a',{staticClass:"vvm-icon-s36",on:{"click":function($event){return _vm.splitView(36)}}})]):_vm._e(),(_vm.btnView64)?_c('li',[_c('a',{staticClass:"vvm-icon-s64",on:{"click":function($event){return _vm.splitView(64)}}})]):_vm._e(),(_vm.btnViewMute | _vm.btnViewStop | _vm.btnViewClear)?_c('li',{staticClass:"vvm-separator"},[_c('span')]):_vm._e(),(_vm.btnViewMute)?_c('li',[_c('a',{staticClass:"vvm-icon-mute",on:{"click":_vm.mute}})]):_vm._e(),(_vm.btnViewStop)?_c('li',[_c('a',{staticClass:"vvm-icon-stop",on:{"click":_vm.stop}})]):_vm._e(),(_vm.btnViewClear)?_c('li',[_c('a',{staticClass:"vvm-icon-clear",on:{"click":_vm.clear}})]):_vm._e(),(_vm.btnViewFill)?_c('li',{staticClass:"vvm-separator"},[_c('span')]):_vm._e(),(_vm.btnViewFill)?_c('li',[_c('a',{staticClass:"vvm-icon-fill",on:{"click":_vm.togglefill}})]):_vm._e()])])])}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/vue-video-monitor.vue?vue&type=template&id=a47924a2&
+// CONCATENATED MODULE: ./src/vue-video-monitor.vue?vue&type=template&id=32cf009d&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.constructor.js
 var es_number_constructor = __webpack_require__("a9e3");
@@ -3441,12 +3441,12 @@ var es_regexp_exec = __webpack_require__("ac1f");
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.string.split.js
 var es_string_split = __webpack_require__("1276");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"44b5e618-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-player.vue?vue&type=template&id=b12e4370&
-var vue_video_playervue_type_template_id_b12e4370_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"vvplayer",staticClass:"vvp-player",class:_vm.fillCls,on:{"click":_vm.handleClick,"dblclick":_vm.handleDblClick}},[_c('div',{staticClass:"vvp-shade",class:_vm.loadingCls},[_c('div',{staticClass:"vjs-loading-spinner"}),_c('div',{staticClass:"vvp-error-ctx"},[_c('div',{staticClass:"vvp-error-button"},[_c('span',{on:{"click":function($event){return _vm.close()}}})]),_c('div',{staticClass:"vvp-error-text",domProps:{"innerHTML":_vm._s(_vm.error)}})])]),_c('div',{staticClass:"vvp-focus",class:_vm.focusCls})])}
-var vue_video_playervue_type_template_id_b12e4370_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"44b5e618-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-player.vue?vue&type=template&id=408dd161&
+var vue_video_playervue_type_template_id_408dd161_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"vvplayer",staticClass:"vvp-player",class:_vm.fillCls,on:{"click":_vm.handleClick,"dblclick":_vm.handleDblClick}},[_c('div',{staticClass:"vvp-shade",class:_vm.loadingCls},[_c('div',{staticClass:"vjs-loading-spinner"}),_c('div',{staticClass:"vvp-error-ctx"},[_c('div',{staticClass:"vvp-error-button"},[_c('span',{on:{"click":function($event){return _vm.close()}}})]),_c('div',{staticClass:"vvp-error-text",domProps:{"innerHTML":_vm._s(_vm.error)}})])]),_c('div',{staticClass:"vvp-focus",class:_vm.focusCls})])}
+var vue_video_playervue_type_template_id_408dd161_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/vue-video-player.vue?vue&type=template&id=b12e4370&
+// CONCATENATED MODULE: ./src/vue-video-player.vue?vue&type=template&id=408dd161&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.fill.js
 var es_array_fill = __webpack_require__("cb29");
@@ -3710,7 +3710,7 @@ var playerOptions = {
 
       var el = document.createElement('video');
       el.id = this.id;
-      el.className = 'video-js vjs-big-play-centered vjs-16-9';
+      el.className = 'video-js vjs-big-play-centered';
       el.setAttribute('preload', null);
       el.innerHTML = '<p class="vjs-no-js">Please consider upgrading to a web browser that supports HTML5 video</p>';
       this.$refs.vvplayer.appendChild(el);
@@ -4130,8 +4130,8 @@ function normalizeComponent (
 
 var component = normalizeComponent(
   src_vue_video_playervue_type_script_lang_js_,
-  vue_video_playervue_type_template_id_b12e4370_render,
-  vue_video_playervue_type_template_id_b12e4370_staticRenderFns,
+  vue_video_playervue_type_template_id_408dd161_render,
+  vue_video_playervue_type_template_id_408dd161_staticRenderFns,
   false,
   null,
   null,
@@ -4468,34 +4468,22 @@ var VUE_PLAYER_PREFIX = 'vvplayer';
     /**
      * 获取空闲视图
      */
-    getIdleView: function getIdleView(src) {
+    getIdleView: function getIdleView(unique) {
       if (!this.duplicate) {
-        // 先查出src是否正在播放中
-        var filename = this.url2Filename(src);
+        // 不允许重复
+        var player = this.getPlaying(unique);
 
-        for (var i = 0; i < this.viewCount; i++) {
-          var player = this.getPlayerById(this.videos[i].id); // 报错的窗口 或 正在播放中的窗口
-
-          if (player.status > 0) {
-            if (filename === player.getOptions().data.unique) {
-              // 说明正在播放
-              if (player.status < 3) {
-                return null;
-              } // player.status = 3 说明出错了，可以继续使用这个窗口
-
-
-              return player;
-            }
-          }
+        if (player) {
+          return null;
         }
       } // 没有在播放
 
 
-      for (var _i = 0; _i < this.viewCount; _i++) {
-        var _player = this.getPlayerById(this.videos[_i].id); // 空的窗口 或 报错的窗口
+      for (var i = 0; i < this.viewCount; i++) {
+        var _player = this.getPlayerById(this.videos[i].id); // 空的窗口 或 报错的窗口
 
 
-        if (_player.status === 0) {
+        if (_player.status === 0 || _player.status === 3) {
           return _player;
         }
       }
@@ -4527,12 +4515,9 @@ var VUE_PLAYER_PREFIX = 'vvplayer';
       for (var i = 0; i < this.viewCount; i++) {
         var player = this.getPlayerById(this.videos[i].id); // 报错的窗口 或 正在播放中的窗口
 
-        if (player.status > 0) {
+        if (player.status > 0 && player.status < 3) {
           if (unique === player.getOptions().data.unique) {
-            // 说明正在播放
-            if (player.status < 3) {
-              return player;
-            }
+            return player;
           }
         }
       }
@@ -4563,7 +4548,13 @@ var VUE_PLAYER_PREFIX = 'vvplayer';
       });
     },
     play: function play(options) {
-      var player = this.getIdleView(options.src);
+      var unique = this.url2Filename(options.src);
+
+      if (options.data && options.data.unique) {
+        unique = options.data.unique;
+      }
+
+      var player = this.getIdleView(unique); // null 说明没有多余的位置 或 已经在播放中
 
       if (player) {
         player.play(options);
@@ -4694,9 +4685,6 @@ var vue_video_monitor_component = normalizeComponent(
 
 /* harmony default export */ var vue_video_monitor = (vue_video_monitor_component.exports);
 // CONCATENATED MODULE: ./src/index.js
- // 注册组件
-// VueVideoMonitor.install = (Vue) =>
-//   Vue.component(VueVideoMonitor.name, VueVideoMonitor)
 
 /* harmony default export */ var src_0 = (vue_video_monitor);
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib.js

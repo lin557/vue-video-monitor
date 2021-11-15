@@ -223,7 +223,7 @@ export default {
     createPlayer() {
       const el = document.createElement('video')
       el.id = this.id
-      el.className = 'video-js vjs-big-play-centered vjs-16-9'
+      el.className = 'video-js vjs-big-play-centered'
       el.setAttribute('preload', null)
       el.innerHTML =
         '<p class="vjs-no-js">Please consider upgrading to a web browser that supports HTML5 video</p>'
