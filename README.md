@@ -170,6 +170,12 @@ The player object corresponding to the specified identifier. About **unique** pa
 
 
 
+### getSelected()
+
+Returns the currently selected player object
+
+
+
 ### mute()
 
 Mute all players
@@ -216,9 +222,7 @@ The format of the **data** object parameter is as follows:
 
 ```json
 {
-  // Default src filename
   unique: filename,
-  // User private data
   other: null
 }
 ```
