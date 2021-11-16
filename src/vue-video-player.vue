@@ -528,6 +528,7 @@ export default {
       display: block;
       content: '\f102';
       font-size: 50px;
+      line-height: 50px;
       color: gray;
       opacity: 0.8;
       top: calc(50% - 25px);
