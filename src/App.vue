@@ -24,6 +24,9 @@
         <button v-on:click="play">play</button>
         <button @click="test">test</button>
       </div>
+      <div class="demo">
+        <button @click="getSelected()">getSelected()</button>
+      </div>
     </div>
   </div>
 </template>
@@ -85,6 +88,9 @@ export default {
     controlShow() {
       this.controlBar.enabled = true
     },
+    getSelected() {
+      console.log(this.$refs.monitor.getSelected())
+    },
     play() {
       this.$refs.monitor.play({
         src: this.selectItem,
@@ -134,7 +140,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 20px;
+  margin-top: 15px;
 
   .demo {
     padding: 6px;
@@ -161,7 +167,7 @@ body {
 .video-view {
   width: 100%;
   max-width: 1280px;
-  height: 900px;
+  height: 850px;
 }
 
 .center {

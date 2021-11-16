@@ -359,6 +359,12 @@ export default {
       return null
     },
     /**
+     * 返回选中的窗口播放器
+     */
+    getSelected() {
+      return this.getPlayerById(VUE_PLAYER_PREFIX + this.selected.id)
+    },
+    /**
      * 判断视图窗口是否存在
      */
     isViewExist(id) {
