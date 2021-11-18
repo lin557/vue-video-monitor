@@ -364,6 +364,9 @@ export default {
     getSelected() {
       return this.getPlayerById(VUE_PLAYER_PREFIX + this.selected.id)
     },
+    getViewCount() {
+      return this.viewCount
+    },
     /**
      * 判断视图窗口是否存在
      */
@@ -757,6 +760,15 @@ $controlColor: #202020;
       .vvp-player {
         height: 33.33%;
         width: 33.33%;
+
+        .vvp-shade {
+          &:before {
+            font-size: 68px;
+            line-height: 68px;
+            top: calc(50% - 34px);
+            left: calc(50% - 34px);
+          }
+        }
       }
 
       .vvm-s0 {
@@ -807,6 +819,15 @@ $controlColor: #202020;
       .vvp-player {
         height: 25%;
         width: 25%;
+
+        .vvp-shade {
+          &:before {
+            font-size: 58px;
+            line-height: 58px;
+            top: calc(50% - 29px);
+            left: calc(50% - 29px);
+          }
+        }
       }
 
       .vvm-s0 {
@@ -864,6 +885,15 @@ $controlColor: #202020;
       .vvp-player {
         height: 33.33%;
         width: 33.33%;
+
+        .vvp-shade {
+          &:before {
+            font-size: 68px;
+            line-height: 68px;
+            top: calc(50% - 34px);
+            left: calc(50% - 34px);
+          }
+        }
       }
 
       .vvm-h3,
@@ -905,6 +935,15 @@ $controlColor: #202020;
       .vvp-player {
         height: 25%;
         width: 25%;
+
+        .vvp-shade {
+          &:before {
+            font-size: 58px;
+            line-height: 58px;
+            top: calc(50% - 29px);
+            left: calc(50% - 29px);
+          }
+        }
       }
 
       .vvm-s0,
@@ -956,6 +995,15 @@ $controlColor: #202020;
       .vvp-player {
         height: 25%;
         width: 25%;
+
+        .vvp-shade {
+          &:before {
+            font-size: 58px;
+            line-height: 58px;
+            top: calc(50% - 29px);
+            left: calc(50% - 29px);
+          }
+        }
       }
 
       .vvm-h4,
@@ -1001,6 +1049,15 @@ $controlColor: #202020;
       .vvp-player {
         height: 20%;
         width: 20%;
+
+        .vvp-shade {
+          &:before {
+            font-size: 50px;
+            line-height: 50px;
+            top: calc(50% - 25px);
+            left: calc(50% - 25px);
+          }
+        }
       }
 
       .vvm-h5,
@@ -1051,6 +1108,14 @@ $controlColor: #202020;
       .vvp-player {
         height: 16.66666%;
         width: 16.66666%;
+        .vvp-shade {
+          &:before {
+            font-size: 46px;
+            line-height: 46px;
+            top: calc(50% - 23px);
+            left: calc(50% - 23px);
+          }
+        }
       }
 
       .vvm-h6,
@@ -1106,6 +1171,14 @@ $controlColor: #202020;
       .vvp-player {
         height: 12.5%;
         width: 12.5%;
+        .vvp-shade {
+          &:before {
+            font-size: 40px;
+            line-height: 40px;
+            top: calc(50% - 20px);
+            left: calc(50% - 20px);
+          }
+        }
       }
 
       .vvm-h1 {

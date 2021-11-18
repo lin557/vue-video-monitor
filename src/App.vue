@@ -53,6 +53,8 @@ export default {
           '10',
           '16',
           '25',
+          '36',
+          '64',
           'mute',
           'stop',
           'clear',

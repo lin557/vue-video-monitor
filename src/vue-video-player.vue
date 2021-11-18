@@ -527,12 +527,12 @@ export default {
     &:before {
       display: block;
       content: '\f102';
-      font-size: 50px;
-      line-height: 50px;
+      font-size: 72px;
+      line-height: 72px;
       color: gray;
       opacity: 0.8;
-      top: calc(50% - 25px);
-      left: calc(50% - 25px);
+      top: calc(50% - 36px);
+      left: calc(50% - 36px);
       position: absolute;
     }
 
