@@ -191,7 +191,7 @@ Play video, The options object format is as follows:
 | content  | Context menu                                               | array   | null                                            |
 | data     | user data                                                  | object  | {<br />unique: filename<br />other: null<br />} |
 | hasAudio | With audio                                                 | boolean | true                                            |
-| info     | Display customized text message, Default display file name | string  | null                                            |
+| text     | Display customized text message, Default display file name | string  | null                                            |
 | record   | Record control parameters(Does not support rtmp/m3u8)      | object  | {<br />enabled: true,<br />isLive: true<br />}  |
 | src      | Media source                                               | string  | -                                               |
 
@@ -220,7 +220,7 @@ content: [
 
 The format of the **data** object parameter is as follows:
 
-```json
+```
 {
   unique: filename,
   other: null

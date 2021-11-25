@@ -137,6 +137,11 @@ export default {
     focused: {
       type: Boolean,
       default: true
+    },
+    // 循环创建 不管其他窗口是否打开 关掉最先打开的窗口 并播放新的视频
+    loopCreate: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -150,7 +155,8 @@ export default {
         id: -1,
         player: null
       },
-      filled: true
+      filled: true,
+      createOrder: 0
     }
   },
   computed: {
@@ -219,6 +225,46 @@ export default {
     }
   },
   methods: {
+    /**
+     * 申请一个播放窗口
+     */
+    apply(param) {
+      let player = null
+      if (this.duplicate) {
+        // 允许重复 判断有没有空的窗口
+        player = this.getIdleView()
+      } else {
+        // 不允许重复 判断窗口是否正在播放中
+        player = this.getPlaying(param.unique)
+        if (player) {
+          // 正在播放中 设置焦点
+          this.setFocus(player)
+          return -1
+        } else {
+          // 没有在播放 获取一个空闲窗口
+          player = this.getIdleView()
+        }
+      }
+      if (player) {
+        // 有可用窗口 占用
+        player.occupy(this.newOrder(), param.unique, param.text)
+        return player.index
+      }
+      // 窗口都被用了 关掉最先创建的窗口
+      if (this.loopCreate) {
+        // 允许关旧的创建新的
+        player = this.getEarlyView()
+        if (player) {
+          // 存在时关闭旧的
+          player.close()
+          player.occupy(this.newOrder(), param.unique, param.text)
+          return player.index
+        }
+        return -1
+      } else {
+        return -1
+      }
+    },
     calcBtnView(value) {
       if (this.control.button.indexOf(value) === -1) {
         return false
@@ -310,21 +356,32 @@ export default {
       }
     },
     /**
-     * 获取空闲视图
+     * 获取最早创建的窗口
      */
-    getIdleView(unique) {
-      if (!this.duplicate) {
-        // 不允许重复
-        const player = this.getPlaying(unique)
-        if (player) {
-          return null
+    getEarlyView() {
+      let lastPlayer = null
+      let testOrder = this.createOrder + 100
+      for (let i = 0; i < this.viewCount; i++) {
+        const player = this.getPlayerById(this.videos[i].id)
+        // 被占用 或 播放中 或 报错的窗口
+        if (player.status > 0) {
+          if (player.order <= testOrder) {
+            lastPlayer = player
+            testOrder = player.order
+          }
         }
       }
+      return lastPlayer
+    },
+    /**
+     * 获取空闲视图
+     */
+    getIdleView() {
       // 没有在播放
       for (let i = 0; i < this.viewCount; i++) {
         const player = this.getPlayerById(this.videos[i].id)
         // 空的窗口 或 报错的窗口
-        if (player.status === 0 || player.status === 3) {
+        if (player.status === 0 || player.status === 4) {
           return player
         }
       }
@@ -350,7 +407,7 @@ export default {
       for (let i = 0; i < this.viewCount; i++) {
         const player = this.getPlayerById(this.videos[i].id)
         // 报错的窗口 或 正在播放中的窗口
-        if (player.status > 0 && player.status < 3) {
+        if (player.status > 0 && player.status < 4) {
           if (unique === player.getOptions().data.unique) {
             return player
           }
@@ -386,14 +443,30 @@ export default {
         player.mute()
       })
     },
+    newOrder() {
+      this.createOrder++
+      return this.createOrder
+    },
     play(options) {
       let unique = this.url2Filename(options.src)
       if (options.data && options.data.unique) {
         unique = options.data.unique
       }
-      const player = this.getIdleView(unique)
-      // null 说明没有多余的位置 或 已经在播放中
+      // 判断是否正在播放中
+      let player = this.getPlaying(unique)
+      if (player && player.status > 1 && !this.duplicate) {
+        // 播放中 并不允许重复
+        return
+      }
+      if (options.viewIndex === null) {
+        // 获取空闲
+        player = this.getIdleView()
+      } else {
+        // 指定播放位置
+        player = this.getPlayerById(VUE_PLAYER_PREFIX + options.viewIndex)
+      }
       if (player) {
+        options.order = this.newOrder()
         player.play(options)
       }
     },

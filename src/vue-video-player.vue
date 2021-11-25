@@ -8,7 +8,10 @@
     ref="vvplayer"
   >
     <div class="vvp-shade" :class="loadingCls">
-      <div class="vjs-loading-spinner"></div>
+      <div class="vjs-loading-spinner">
+        <span class="vvp-rate">{{ speed }}</span>
+      </div>
+      <div class="vvp-occupy">{{ occupyText }}</div>
       <div class="vvp-error-ctx">
         <div class="vvp-error-button">
           <span @click="close()"></span>
@@ -135,7 +138,7 @@ export default {
     return {
       id: null,
       player: null,
-      // 0=空闲 1=请求中 2=播放中/缓冲中 3=错误
+      // 0=空闲 1=占用中 2=请求中 3=播放中/缓冲中 4=错误
       status: 0,
       focused: false,
       error: '',
@@ -145,7 +148,13 @@ export default {
       lastOptions: null,
       // 连接超时定时器
       timer: null,
-      filename: null
+      filename: null,
+      // 加载flv时用于显示加载网速
+      speed: '',
+      // 创建时间(或占用时间)
+      order: 0,
+      // 占用文本
+      occupyText: ''
     }
   },
   computed: {
@@ -154,8 +163,9 @@ export default {
         case 0:
           return ''
         case 1:
+        case 2:
           return 'vjs-waiting'
-        case 3:
+        case 4:
           return 'vvp-error'
         default:
           return 'vvp-hide'
@@ -192,10 +202,13 @@ export default {
             this.player.fetchObj.stop(false)
           }
         }
+        this.order = 0
+        this.occupyText = ''
       }
-      this.destoryPlayer()
       this.status = 0
+      this.destoryPlayer()
       this.error = ''
+      this.speed = ''
       this.filename = null
       this.procgress = 0
       this.lastOptions = null
@@ -252,14 +265,15 @@ export default {
         }).flvPlayer
         if (flvPlayer) {
           flvPlayer.on(flvjs.Events.ERROR, (errType, errDetails, e) => {
-            this.status = 3
+            this.status = 4
             this.error = this.getError('(flv) ' + e.msg)
           })
           flvPlayer.on(flvjs.Events.STATISTICS_INFO, (info) => {
+            this.speed = info.speed.toFixed(0) + 'kb'
             this.updateSpeed(info.speed.toFixed(0) + ' kb/s')
           })
           this.timer = this.player.setTimeout(() => {
-            this.status = 3
+            this.status = 4
             this.error = this.getError('(flv) connect timeout')
           }, ERR_NETWORK_TIMEOUT)
         }
@@ -270,7 +284,7 @@ export default {
         }
       })
       this.player.on('loadeddata', () => {
-        this.status = 2
+        this.status = 3
       })
       this.player.on('durationchange', () => {
         if (!this.player.controlBar.liveDisplay.hasClass('vjs-hidden')) {
@@ -330,7 +344,7 @@ export default {
       // })
       this.player.on('error', (e) => {
         // 播放mp4/m3u8时可以捕获 flv不行
-        this.status = 3
+        this.status = 4
         if (this.player.error) {
           switch (this.player.error().code) {
             case 0:
@@ -384,7 +398,7 @@ export default {
       }
     },
     getError(error) {
-      return '<p>' + this.lastOptions.info + '</p><p>' + error + '</p>'
+      return '<p>' + this.lastOptions.text + '</p><p>' + error + '</p>'
     },
     getMediaType(url) {
       if (url === null) {
@@ -416,17 +430,40 @@ export default {
     mute() {
       this.player.volume(0)
     },
+    /**
+     * 占用
+     * @param order {int} 创建顺序
+     * @param text {string} 占用文本
+     */
+    occupy(order, unique, text) {
+      if (this.status === 4) {
+        this.close()
+      }
+      if (this.status === 0) {
+        this.order = order
+        this.status = 1
+        this.occupyText = text
+        this.lastOptions = {
+          data: {
+            unique: unique
+          }
+        }
+      }
+    },
     play(option) {
       this.close()
       this.createPlayer()
       const options = videojs.mergeOptions(playerOptions, option)
+      if (this.order === 0) {
+        this.order = options.order
+      }
       if (!options.hasAudio) {
         this.player.controlBar.volumePanel.hide()
         if (this.player.options().flvjs) {
           this.player.options().flvjs.mediaDataSource.hasAudio = false
         }
       }
-      this.status = 1
+      this.status = 2
       const type = this.getMediaType(options.src)
       if (options.content) {
         this.player.contextmenuUI({
@@ -450,13 +487,13 @@ export default {
       if (options.data.unique == null) {
         options.data.unique = this.filename
       }
-      let info = this.filename
-      if (options.info && options.info !== '') {
-        info = options.info
+      let text = this.filename
+      if (options.text && options.text !== '') {
+        text = options.text
       } else {
-        options.info = info
+        options.text = text
       }
-      this.updateInfo(info)
+      this.updateInfo(text)
       this.player.src([{ type: type, src: options.src }])
       this.player.autoplay()
       this.lastOptions = options
@@ -471,9 +508,9 @@ export default {
       }
       return pwd
     },
-    updateInfo(info) {
+    updateInfo(text) {
       if (this.player.header) {
-        this.player.header.el.info.innerText = info
+        this.player.header.el.info.innerText = text
       }
     },
     updateSpeed(speed) {
@@ -492,9 +529,12 @@ export default {
   },
   mounted() {},
   watch: {
-    status(value) {
-      if (value > 1) {
-        this.clearTimer()
+    status(val) {
+      switch (val) {
+        case 3:
+        case 4:
+          this.clearTimer()
+          break
       }
     }
   },
@@ -540,6 +580,36 @@ export default {
       &:before {
         content: '';
       }
+
+      .vjs-loading-spinner {
+        margin: -27px 0 0 -27px;
+        width: 54px;
+        height: 54px;
+        border-radius: 27px;
+      }
+
+      .vvp-occupy {
+        display: block;
+      }
+    }
+
+    .vvp-rate {
+      position: absolute;
+      color: #aaa;
+      text-align: center;
+      width: 42px;
+      top: 15px;
+      font-family: Avenir, Helvetica, Arial, sans-serif;
+      font-size: 10px;
+    }
+
+    .vvp-occupy {
+      display: none;
+      position: absolute;
+      width: 100%;
+      top: calc(50% + 33px);
+      color: #aaa;
+      text-align: center;
     }
 
     .vvp-error-ctx {
@@ -574,7 +644,7 @@ export default {
           width: 100%;
 
           p {
-            margin: 5px 0;
+            margin: 3px 0;
           }
         }
 

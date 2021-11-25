@@ -4,9 +4,9 @@
       <VueVideoMonitor
         :count="4"
         :control="controlBar"
-        :closeAfterViewChange="false"
+        :closeAfterViewChange="true"
         :focused="true"
-        :duplicate="false"
+        :duplicate="true"
         ref="monitor"
       />
       <div class="demo">
@@ -79,6 +79,10 @@ export default {
         {
           src: 'https://dno-xiu-hd.youku.com/rtp/stream_alias_1382681473_8074368.flv?auth_key=1634727867-0-0-da1754c0b88961719832e0a22c69a404',
           title: 'v.laifeng.flv'
+        },
+        {
+          src: 'http://221.237.209.57:9085/mdvr/live/15981010746_1.flv',
+          title: '15981010746_1.flv'
         }
       ]
     }
@@ -96,7 +100,7 @@ export default {
     play() {
       this.$refs.monitor.play({
         src: this.selectItem,
-        // info: '粤B-8125L CH3',
+        // text: '粤B-8125L CH3',
         content: [
           {
             // A plain old link.
@@ -111,6 +115,7 @@ export default {
             }
           }
         ],
+        viewIndex: 1,
         hasAudio: true,
         data: {
           // unique: this.selectItem + 'aaa'
@@ -122,8 +127,7 @@ export default {
       })
     },
     test() {
-      const player = this.$refs.monitor.getPlaying('xxoo')
-      console.log(player)
+      this.$refs.monitor.apply({ unique: null, text: '占用中' })
     },
     togglefill() {
       this.$refs.monitor.togglefill()
