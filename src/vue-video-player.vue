@@ -87,6 +87,7 @@ const defaults = {
 
 const playerOptions = {
   src: '',
+  isLive: true,
   record: {
     enabled: false,
     isLive: true
@@ -105,6 +106,17 @@ const playerOptions = {
 export default {
   name: 'VueVideoPlayer',
   props: {
+    // 自动追帧
+    autoRate: {
+      type: Object,
+      default() {
+        return {
+          enabled: true,
+          max: 9.0,
+          min: 3.0
+        }
+      }
+    },
     // 当出错时自动重连
     connect: {
       type: Object,
@@ -149,12 +161,15 @@ export default {
       // 连接超时定时器
       timer: null,
       filename: null,
+      suffix: null,
       // 加载flv时用于显示加载网速
       speed: '',
       // 创建时间(或占用时间)
       order: 0,
       // 占用文本
-      occupyText: ''
+      occupyText: '',
+      // 播放速率
+      rate: 1.0
     }
   },
   computed: {
@@ -212,6 +227,7 @@ export default {
       this.filename = null
       this.procgress = 0
       this.lastOptions = null
+      this.rate = 1.0
     },
     createHeader(player) {
       const video = player.el()
@@ -308,7 +324,7 @@ export default {
         if (this.autoAudio && this.lastOptions.hasAudio) {
           // 如果 m3u8 关闭这个功能
           if (this.filename) {
-            if (this.filename.split('.').pop().toLowerCase() === 'm3u8') {
+            if (this.suffix === 'm3u8') {
               this.autoAudio = false
             }
           }
@@ -328,6 +344,21 @@ export default {
       this.player.on('canplay', () => {
         // console.log('canplay')
         this.autoAudio = false
+      })
+      this.player.on('timeupdate', () => {
+        if (this.autoRate.enabled && this.lastOptions.isLive) {
+          // 当前播放时间
+          const cur = this.player.currentTime()
+          // 缓冲区尾部时间
+          const end = this.player.bufferedEnd()
+
+          if (end - cur > this.autoRate.max) {
+            this.playbackRate(1.5)
+          }
+          if (end - cur < this.autoRate.min) {
+            this.playbackRate(1.0)
+          }
+        }
       })
       // this.player.on('loadeddata', () => {
       //   console.log('loadeddata')
@@ -484,6 +515,7 @@ export default {
         }
       }
       this.filename = this.url2Filename(options.src)
+      this.suffix = this.filename.split('.').pop().toLowerCase()
       if (options.data.unique == null) {
         options.data.unique = this.filename
       }
@@ -497,6 +529,24 @@ export default {
       this.player.src([{ type: type, src: options.src }])
       this.player.autoplay()
       this.lastOptions = options
+    },
+    /**
+     * 获取或设置当前播放速率
+     * @param rateopt {number} 速率值 1.0 表正常播放 0.5表半速
+     */
+    playbackRate(rateopt) {
+      if (rateopt === null) {
+        return this.rate
+      }
+      if (this.player) {
+        if (this.rate !== rateopt) {
+          this.rate = rateopt
+          this.player.playbackRate(this.rate)
+          window.console.warn(
+            this.lastOptions.src + ' playback rate change to ' + this.rate
+          )
+        }
+      }
     },
     randomString(len) {
       len = len || 32

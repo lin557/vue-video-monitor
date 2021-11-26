@@ -77,7 +77,7 @@ export default {
           title: 'oceans.mp4'
         },
         {
-          src: 'https://dno-xiu-hd.youku.com/rtp/stream_alias_1382681473_8074368.flv?auth_key=1634727867-0-0-da1754c0b88961719832e0a22c69a404',
+          src: 'https://hlsflv-liveshow.bdstatic.com/live/stream_bduid_3532209094_4999810230-L1.flv',
           title: 'v.laifeng.flv'
         },
         {
@@ -115,10 +115,15 @@ export default {
             }
           }
         ],
+        isLive: false,
         viewIndex: 1,
         hasAudio: true,
         data: {
-          // unique: this.selectItem + 'aaa'
+          unique: 'aaa',
+          user: {
+            a: 1,
+            b: 2
+          }
         },
         record: {
           enabled: true,
@@ -127,7 +132,7 @@ export default {
       })
     },
     test() {
-      this.$refs.monitor.apply({ unique: null, text: '占用中' })
+      console.log(this.$refs.monitor.getUserData('aaa'))
     },
     togglefill() {
       this.$refs.monitor.togglefill()

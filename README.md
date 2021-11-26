@@ -61,8 +61,6 @@ To include vue-video-monitor on your website or web application, use any of the 
 
 <script>
 import VueVideoMonitor from 'vue-video-monitor'
-// or
-// import VueVideoMonitor from 'vue-video-monitor/src/vue-video-monitor.vue'
 
 export default {
   components: {
@@ -136,11 +134,12 @@ export default {
 
 | Property      | Description | Type    | Default              |
 | :------------ | ---------- | :------ | :------------------- |
-| closeAfterViewChange | Whether to close the playing video when the view window changes | boolean | false |
+| closeAfterViewChange | Whether to close the playing video when the view window changes. The default is true after 1.2.7 | boolean | true |
 | control | Control panel parameters | object |  |
 | count | Initialize the number of video windows | number | 4 |
 | duplicate | Whether to allow multiple identical videos to be played at the same time | boolean | false |
 | focused | show focused | boolean | true |
+| loopCreate | When playing a video, when there is no free window, automatically close the earliest opened window. Best to set "closeAfterViewChange" to true | boolean | true |
 
 
 
@@ -155,6 +154,24 @@ export default {
 
 
 ## Methods
+
+
+
+### apply(param)
+
+Apply for an idle view and occupy it to display the loading effect
+
+```
+param = {
+  unique: unique
+  text: text
+}
+```
+
+| Property | Description                                                  | Type   | Default      |
+| -------- | ------------------------------------------------------------ | ------ | ------------ |
+| unique   | Specified by the **options.data.unique** parameter of the play() method | string |              |
+| text     | loading text                                                 | string | empty string |
 
 
 
@@ -176,6 +193,12 @@ Returns the currently selected player object
 
 
 
+### getUserData(unique)
+
+About **unique** param , Specified by the **options.data.unique** parameter of the play() method. Return **options.data.user**
+
+
+
 ### mute()
 
 Mute all players
@@ -186,14 +209,16 @@ Mute all players
 
 Play video, The options object format is as follows:
 
-| Property | Description                                                | Type    | Default                                         |
-| -------- | ---------------------------------------------------------- | ------- | ----------------------------------------------- |
-| content  | Context menu                                               | array   | null                                            |
-| data     | user data                                                  | object  | {<br />unique: filename<br />other: null<br />} |
-| hasAudio | With audio                                                 | boolean | true                                            |
-| text     | Display customized text message, Default display file name | string  | null                                            |
-| record   | Record control parameters(Does not support rtmp/m3u8)      | object  | {<br />enabled: true,<br />isLive: true<br />}  |
-| src      | Media source                                               | string  | -                                               |
+| Property  | Description                                                  | Type    | Default                                        |
+| --------- | ------------------------------------------------------------ | ------- | ---------------------------------------------- |
+| content   | Context menu                                                 | array   | null                                           |
+| data      | user data                                                    | object  | {<br />unique: filename<br />user: null<br />} |
+| hasAudio  | With audio                                                   | boolean | true                                           |
+| isLive    | Specify whether the current video stream is a real-time stream or a file stream<br />If true, the playback rate will be adjusted according to the buffer size | boolean | true                                           |
+| text      | Display customized text message, Default display file name.<br /> It was "info" before 1.2.6 | string  | null                                           |
+| record    | Record control parameters(Does not support rtmp/m3u8)        | object  | {<br />enabled: true,<br />isLive: true<br />} |
+| src       | Media source                                                 | string  | -                                              |
+| viewIndex | View index, If it is >= 0, the video will be played in the specified window | number  | null                                           |
 
 
 
@@ -223,7 +248,7 @@ The format of the **data** object parameter is as follows:
 ```
 {
   unique: filename,
-  other: null
+  user: null
 }
 ```
 

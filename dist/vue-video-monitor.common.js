@@ -3422,12 +3422,12 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"0ace1f18-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-monitor.vue?vue&type=template&id=328e897e&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"0ace1f18-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-monitor.vue?vue&type=template&id=f34b90f6&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vvm-monitor",class:_vm.controlCls},[_c('div',{ref:"view",staticClass:"vvm-view",class:_vm.viewCls},[_vm._l((_vm.videos),function(item,index){return _c('vue-video-player',{key:item.id,ref:item.id,refInFor:true,class:item.cls,attrs:{"connect":item.connect,"options":item.options,"index":index,"tag":item.id},on:{"click":_vm.playerClick,"dblclick":_vm.playerDbClick}})}),_c('div',{staticClass:"vvm-border vvm-h vvm-h1"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h2"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h3"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h4"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h5"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h6"}),_c('div',{staticClass:"vvm-border vvm-h vvm-h7"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v1"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v2"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v3"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v4"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v5"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v6"}),_c('div',{staticClass:"vvm-border vvm-v vvm-v7"})],2),_c('div',{staticClass:"vvm-control"},[_c('ul',[(_vm.btnView1)?_c('li',[_c('a',{staticClass:"vvm-icon-s1",on:{"click":function($event){return _vm.splitView(1)}}})]):_vm._e(),(_vm.btnView4)?_c('li',[_c('a',{staticClass:"vvm-icon-s4",on:{"click":function($event){return _vm.splitView(4)}}})]):_vm._e(),(_vm.btnView6)?_c('li',[_c('a',{staticClass:"vvm-icon-s6",on:{"click":function($event){return _vm.splitView(6)}}})]):_vm._e(),(_vm.btnView8)?_c('li',[_c('a',{staticClass:"vvm-icon-s8",on:{"click":function($event){return _vm.splitView(8)}}})]):_vm._e(),(_vm.btnView9)?_c('li',[_c('a',{staticClass:"vvm-icon-s9",on:{"click":function($event){return _vm.splitView(9)}}})]):_vm._e(),(_vm.btnView10)?_c('li',[_c('a',{staticClass:"vvm-icon-s10",on:{"click":function($event){return _vm.splitView(10)}}})]):_vm._e(),(_vm.btnView16)?_c('li',[_c('a',{staticClass:"vvm-icon-s16",on:{"click":function($event){return _vm.splitView(16)}}})]):_vm._e(),(_vm.btnView25)?_c('li',[_c('a',{staticClass:"vvm-icon-s25",on:{"click":function($event){return _vm.splitView(25)}}})]):_vm._e(),(_vm.btnView36)?_c('li',[_c('a',{staticClass:"vvm-icon-s36",on:{"click":function($event){return _vm.splitView(36)}}})]):_vm._e(),(_vm.btnView64)?_c('li',[_c('a',{staticClass:"vvm-icon-s64",on:{"click":function($event){return _vm.splitView(64)}}})]):_vm._e(),(_vm.btnViewMute | _vm.btnViewStop | _vm.btnViewClear)?_c('li',{staticClass:"vvm-separator"},[_c('span')]):_vm._e(),(_vm.btnViewMute)?_c('li',[_c('a',{staticClass:"vvm-icon-mute",on:{"click":_vm.mute}})]):_vm._e(),(_vm.btnViewStop)?_c('li',[_c('a',{staticClass:"vvm-icon-stop",on:{"click":_vm.stop}})]):_vm._e(),(_vm.btnViewClear)?_c('li',[_c('a',{staticClass:"vvm-icon-clear",on:{"click":_vm.clear}})]):_vm._e(),(_vm.btnViewFill)?_c('li',{staticClass:"vvm-separator"},[_c('span')]):_vm._e(),(_vm.btnViewFill)?_c('li',[_c('a',{staticClass:"vvm-icon-fill",on:{"click":_vm.togglefill}})]):_vm._e()])])])}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/vue-video-monitor.vue?vue&type=template&id=328e897e&
+// CONCATENATED MODULE: ./src/vue-video-monitor.vue?vue&type=template&id=f34b90f6&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.number.constructor.js
 var es_number_constructor = __webpack_require__("a9e3");
@@ -3441,12 +3441,12 @@ var es_regexp_exec = __webpack_require__("ac1f");
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.string.split.js
 var es_string_split = __webpack_require__("1276");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"0ace1f18-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-player.vue?vue&type=template&id=28a99404&
-var vue_video_playervue_type_template_id_28a99404_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"vvplayer",staticClass:"vvp-player",class:_vm.fillCls,on:{"click":_vm.handleClick,"dblclick":_vm.handleDblClick}},[_c('div',{staticClass:"vvp-shade",class:_vm.loadingCls},[_c('div',{staticClass:"vjs-loading-spinner"},[_c('span',{staticClass:"vvp-rate"},[_vm._v(_vm._s(_vm.speed))])]),_c('div',{staticClass:"vvp-occupy"},[_vm._v(_vm._s(_vm.occupyText))]),_c('div',{staticClass:"vvp-error-ctx"},[_c('div',{staticClass:"vvp-error-button"},[_c('span',{on:{"click":function($event){return _vm.close()}}})]),_c('div',{staticClass:"vvp-error-text",domProps:{"innerHTML":_vm._s(_vm.error)}})])]),_c('div',{staticClass:"vvp-focus",class:_vm.focusCls})])}
-var vue_video_playervue_type_template_id_28a99404_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"0ace1f18-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-player.vue?vue&type=template&id=23c822ab&
+var vue_video_playervue_type_template_id_23c822ab_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"vvplayer",staticClass:"vvp-player",class:_vm.fillCls,on:{"click":_vm.handleClick,"dblclick":_vm.handleDblClick}},[_c('div',{staticClass:"vvp-shade",class:_vm.loadingCls},[_c('div',{staticClass:"vjs-loading-spinner"},[_c('span',{staticClass:"vvp-rate"},[_vm._v(_vm._s(_vm.speed))])]),_c('div',{staticClass:"vvp-occupy"},[_vm._v(_vm._s(_vm.occupyText))]),_c('div',{staticClass:"vvp-error-ctx"},[_c('div',{staticClass:"vvp-error-button"},[_c('span',{on:{"click":function($event){return _vm.close()}}})]),_c('div',{staticClass:"vvp-error-text",domProps:{"innerHTML":_vm._s(_vm.error)}})])]),_c('div',{staticClass:"vvp-focus",class:_vm.focusCls})])}
+var vue_video_playervue_type_template_id_23c822ab_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/vue-video-player.vue?vue&type=template&id=28a99404&
+// CONCATENATED MODULE: ./src/vue-video-player.vue?vue&type=template&id=23c822ab&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.fill.js
 var es_array_fill = __webpack_require__("cb29");
@@ -3569,6 +3569,7 @@ var defaults = {
 };
 var playerOptions = {
   src: '',
+  isLive: true,
   record: {
     enabled: false,
     isLive: true
@@ -3586,6 +3587,17 @@ var playerOptions = {
 /* harmony default export */ var vue_video_playervue_type_script_lang_js_ = ({
   name: 'VueVideoPlayer',
   props: {
+    // 自动追帧
+    autoRate: {
+      type: Object,
+      default: function _default() {
+        return {
+          enabled: true,
+          max: 9.0,
+          min: 3.0
+        };
+      }
+    },
     // 当出错时自动重连
     connect: {
       type: Object,
@@ -3630,12 +3642,15 @@ var playerOptions = {
       // 连接超时定时器
       timer: null,
       filename: null,
+      suffix: null,
       // 加载flv时用于显示加载网速
       speed: '',
       // 创建时间(或占用时间)
       order: 0,
       // 占用文本
-      occupyText: ''
+      occupyText: '',
+      // 播放速率
+      rate: 1.0
     };
   },
   computed: {
@@ -3698,6 +3713,7 @@ var playerOptions = {
       this.filename = null;
       this.procgress = 0;
       this.lastOptions = null;
+      this.rate = 1.0;
     },
     createHeader: function createHeader(player) {
       var video = player.el(); // Create div element
@@ -3800,7 +3816,7 @@ var playerOptions = {
         if (_this.autoAudio && _this.lastOptions.hasAudio) {
           // 如果 m3u8 关闭这个功能
           if (_this.filename) {
-            if (_this.filename.split('.').pop().toLowerCase() === 'm3u8') {
+            if (_this.suffix === 'm3u8') {
               _this.autoAudio = false;
             }
           }
@@ -3819,6 +3835,23 @@ var playerOptions = {
       this.player.on('canplay', function () {
         // console.log('canplay')
         _this.autoAudio = false;
+      });
+      this.player.on('timeupdate', function () {
+        if (_this.autoRate.enabled && _this.lastOptions.isLive) {
+          // 当前播放时间
+          var cur = _this.player.currentTime(); // 缓冲区尾部时间
+
+
+          var end = _this.player.bufferedEnd();
+
+          if (end - cur > _this.autoRate.max) {
+            _this.playbackRate(1.5);
+          }
+
+          if (end - cur < _this.autoRate.min) {
+            _this.playbackRate(1.0);
+          }
+        }
       }); // this.player.on('loadeddata', () => {
       //   console.log('loadeddata')
       // })
@@ -3989,6 +4022,7 @@ var playerOptions = {
       }
 
       this.filename = this.url2Filename(options.src);
+      this.suffix = this.filename.split('.').pop().toLowerCase();
 
       if (options.data.unique == null) {
         options.data.unique = this.filename;
@@ -4009,6 +4043,24 @@ var playerOptions = {
       }]);
       this.player.autoplay();
       this.lastOptions = options;
+    },
+
+    /**
+     * 获取或设置当前播放速率
+     * @param rateopt {number} 速率值 1.0 表正常播放 0.5表半速
+     */
+    playbackRate: function playbackRate(rateopt) {
+      if (rateopt === null) {
+        return this.rate;
+      }
+
+      if (this.player) {
+        if (this.rate !== rateopt) {
+          this.rate = rateopt;
+          this.player.playbackRate(this.rate);
+          window.console.warn(this.lastOptions.src + 'playback rate change to ' + this.rate);
+        }
+      }
     },
     randomString: function randomString(len) {
       len = len || 32;
@@ -4175,8 +4227,8 @@ function normalizeComponent (
 
 var component = normalizeComponent(
   src_vue_video_playervue_type_script_lang_js_,
-  vue_video_playervue_type_template_id_28a99404_render,
-  vue_video_playervue_type_template_id_28a99404_staticRenderFns,
+  vue_video_playervue_type_template_id_23c822ab_render,
+  vue_video_playervue_type_template_id_23c822ab_staticRenderFns,
   false,
   null,
   null,
@@ -4288,7 +4340,7 @@ var VUE_PLAYER_PREFIX = 'vvplayer';
   props: {
     closeAfterViewChange: {
       type: Boolean,
-      default: false
+      default: true
     },
     control: {
       type: Object,
@@ -4431,6 +4483,7 @@ var VUE_PLAYER_PREFIX = 'vvplayer';
       if (player) {
         // 有可用窗口 占用
         player.occupy(this.newOrder(), param.unique, param.text);
+        this.setFocus(player);
         return player.index;
       } // 窗口都被用了 关掉最先创建的窗口
 
@@ -4443,6 +4496,7 @@ var VUE_PLAYER_PREFIX = 'vvplayer';
           // 存在时关闭旧的
           player.close();
           player.occupy(this.newOrder(), param.unique, param.text);
+          this.setFocus(player);
           return player.index;
         }
 
@@ -4639,6 +4693,19 @@ var VUE_PLAYER_PREFIX = 'vvplayer';
     getSelected: function getSelected() {
       return this.getPlayerById(VUE_PLAYER_PREFIX + this.selected.id);
     },
+    getUserData: function getUserData(unique) {
+      var player = this.getPlaying(unique);
+
+      if (player) {
+        var opt = player.getOptions();
+
+        if (opt && opt.data.user) {
+          return opt.data.user;
+        }
+      }
+
+      return null;
+    },
     getViewCount: function getViewCount() {
       return this.viewCount;
     },
@@ -4684,12 +4751,12 @@ var VUE_PLAYER_PREFIX = 'vvplayer';
         return;
       }
 
-      if (options.viewIndex === null) {
-        // 获取空闲
-        player = this.getIdleView();
-      } else {
+      if (Object.prototype.hasOwnProperty.call(options, 'viewIndex') && options.viewIndex >= 0 && options.viewIndex < this.viewCount) {
         // 指定播放位置
         player = this.getPlayerById(VUE_PLAYER_PREFIX + options.viewIndex);
+      } else {
+        // 获取空闲
+        player = this.getIdleView();
       }
 
       if (player) {

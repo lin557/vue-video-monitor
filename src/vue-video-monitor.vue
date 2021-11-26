@@ -99,7 +99,7 @@ export default {
   props: {
     closeAfterViewChange: {
       type: Boolean,
-      default: false
+      default: true
     },
     control: {
       type: Object,
@@ -248,6 +248,7 @@ export default {
       if (player) {
         // 有可用窗口 占用
         player.occupy(this.newOrder(), param.unique, param.text)
+        this.setFocus(player)
         return player.index
       }
       // 窗口都被用了 关掉最先创建的窗口
@@ -258,6 +259,7 @@ export default {
           // 存在时关闭旧的
           player.close()
           player.occupy(this.newOrder(), param.unique, param.text)
+          this.setFocus(player)
           return player.index
         }
         return -1
@@ -421,6 +423,16 @@ export default {
     getSelected() {
       return this.getPlayerById(VUE_PLAYER_PREFIX + this.selected.id)
     },
+    getUserData(unique) {
+      const player = this.getPlaying(unique)
+      if (player) {
+        const opt = player.getOptions()
+        if (opt && opt.data.user) {
+          return opt.data.user
+        }
+      }
+      return null
+    },
     getViewCount() {
       return this.viewCount
     },
@@ -458,12 +470,16 @@ export default {
         // 播放中 并不允许重复
         return
       }
-      if (options.viewIndex === null) {
-        // 获取空闲
-        player = this.getIdleView()
-      } else {
+      if (
+        Object.prototype.hasOwnProperty.call(options, 'viewIndex') &&
+        options.viewIndex >= 0 &&
+        options.viewIndex < this.viewCount
+      ) {
         // 指定播放位置
         player = this.getPlayerById(VUE_PLAYER_PREFIX + options.viewIndex)
+      } else {
+        // 获取空闲
+        player = this.getIdleView()
       }
       if (player) {
         options.order = this.newOrder()
