@@ -8,6 +8,7 @@
         :connect="item.connect"
         :options="item.options"
         :index="index"
+        :lockControlBar="item.lockControlBar"
         :tag="item.id"
         :class="item.cls"
         @click="playerClick"
@@ -137,6 +138,13 @@ export default {
     focused: {
       type: Boolean,
       default: true
+    },
+    /**
+     * 常驻工具栏
+     */
+    lockControlBar: {
+      type: Boolean,
+      default: false
     },
     // 循环创建 不管其他窗口是否打开 关掉最先打开的窗口 并播放新的视频
     loopCreate: {
@@ -335,9 +343,10 @@ export default {
               auto: true,
               interval: 15
             },
+            lockControlBar: this.lockControlBar,
             options: {
-              muted: true,
               controls: true,
+              muted: true,
               loop: false
             }
           })
@@ -1266,6 +1275,11 @@ $controlColor: #202020;
             line-height: 40px;
             top: calc(50% - 20px);
             left: calc(50% - 20px);
+          }
+        }
+        .vvp-footer {
+          .vvp-control-speed {
+            display: none;
           }
         }
       }

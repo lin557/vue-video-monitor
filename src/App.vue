@@ -5,8 +5,9 @@
         :count="4"
         :control="controlBar"
         :closeAfterViewChange="true"
+        :lockControlBar="true"
         :focused="true"
-        :duplicate="true"
+        :duplicate="false"
         ref="monitor"
       />
       <div class="demo">
@@ -77,7 +78,7 @@ export default {
           title: 'oceans.mp4'
         },
         {
-          src: 'https://hlsflv-liveshow.bdstatic.com/live/stream_bduid_3532209094_4999810230-L1.flv',
+          src: 'http://219.138.167.86:8588/mdvr/live/16800002099_2.flv',
           title: 'v.laifeng.flv'
         },
         {
@@ -128,11 +129,12 @@ export default {
         record: {
           enabled: true,
           isLive: true
-        }
+        },
+        text: '00209 CH2'
       })
     },
     test() {
-      console.log(this.$refs.monitor.getUserData('aaa'))
+      this.$refs.monitor.apply({ unique: 'aaaa', text: '00209 CH1' })
     },
     togglefill() {
       this.$refs.monitor.togglefill()

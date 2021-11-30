@@ -139,6 +139,7 @@ export default {
 | count | Initialize the number of video windows | number | 4 |
 | duplicate | Whether to allow multiple identical videos to be played at the same time | boolean | false |
 | focused | show focused | boolean | true |
+| lockControlBar | A non-hidden control bar is displayed at the bottom of each window | boolean | false |
 | loopCreate | When playing a video, when there is no free window, automatically close the earliest opened window. Best to set "closeAfterViewChange" to true | boolean | true |
 
 

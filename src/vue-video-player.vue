@@ -9,9 +9,9 @@
   >
     <div class="vvp-shade" :class="loadingCls">
       <div class="vjs-loading-spinner">
-        <span class="vvp-rate">{{ speed }}</span>
+        <span class="vvp-speed">{{ kb }}</span>
       </div>
-      <div class="vvp-occupy">{{ occupyText }}</div>
+      <div class="vvp-occupy">{{ infoText }}</div>
       <div class="vvp-error-ctx">
         <div class="vvp-error-button">
           <span @click="close()"></span>
@@ -33,6 +33,52 @@
         </p>
       </video>
     </div> -->
+    <div class="vvp-footer">
+      <button
+        class="vvp-control vvp-button vvp-control-mute"
+        :class="mutedCls"
+        type="button"
+        title="Pause"
+        aria-disabled="false"
+        @click="toggleMuted()"
+      >
+        <span class="vvp-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <div class="vvp-control vvp-control-text vvp-control-info">
+        {{ infoText }}
+      </div>
+      <div class="vvp-control vvp-control-text vvp-control-speed">
+        {{ kbps }}
+      </div>
+      <button
+        class="vvp-control vvp-button vvp-control-record"
+        :class="recordCls"
+        type="button"
+        title="record"
+        aria-disabled="false"
+        @click="toggleRecord()"
+      >
+        <span class="vvp-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button
+        class="vvp-control vvp-button vvp-control-fullscreen"
+        type="button"
+        title="Fullscreen"
+        aria-disabled="false"
+        @click="fullscreen()"
+      >
+        <span class="vvp-icon-placeholder" aria-hidden="true"></span>
+      </button>
+      <button
+        class="vvp-control vvp-button vvp-control-close"
+        type="button"
+        title="Close"
+        aria-disabled="false"
+        @click="close()"
+      >
+        <span class="vvp-icon-placeholder" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -100,7 +146,8 @@ const playerOptions = {
     // 用户数据
     user: null
   },
-  hasAudio: true
+  hasAudio: true,
+  text: ''
 }
 
 export default {
@@ -126,6 +173,10 @@ export default {
           interval: 15
         }
       }
+    },
+    lockControlBar: {
+      type: Boolean,
+      default: false
     },
     options: {
       type: Object,
@@ -161,13 +212,12 @@ export default {
       // 连接超时定时器
       timer: null,
       filename: null,
+      muted: true,
       suffix: null,
       // 加载flv时用于显示加载网速
-      speed: '',
+      speed: null,
       // 创建时间(或占用时间)
       order: 0,
-      // 占用文本
-      occupyText: '',
       // 播放速率
       rate: 1.0
     }
@@ -187,10 +237,17 @@ export default {
       }
     },
     fillCls() {
+      let cls = ''
+      if (this.lockControlBar) {
+        if (this.status > 0) {
+          // 开始播放或占用时才显示控制栏
+          cls = 'vvp-footer-show'
+        }
+      }
       if (this.fill) {
-        return 'vvp-fill'
+        return cls + ' vvp-fill'
       } else {
-        return ''
+        return cls
       }
     },
     focusCls() {
@@ -198,6 +255,45 @@ export default {
         return 'vvp-focus-show'
       } else {
         return ''
+      }
+    },
+    kbps() {
+      if (this.speed == null) {
+        return ''
+      } else {
+        return this.speed + ' kb/s'
+      }
+    },
+    kb() {
+      if (this.speed == null) {
+        return ''
+      } else {
+        return this.speed + 'kb'
+      }
+    },
+    infoText() {
+      if (this.lastOptions && this.lastOptions.text) {
+        return this.lastOptions.text
+      } else {
+        return ''
+      }
+    },
+    mutedCls() {
+      if (this.muted) {
+        return 'vvp-vol-0'
+      } else {
+        return 'vvp-vol-3'
+      }
+    },
+    recordCls() {
+      if (
+        this.lastOptions &&
+        this.lastOptions.record &&
+        this.lastOptions.record.enabled
+      ) {
+        return ''
+      } else {
+        return 'vvp-hide'
       }
     }
   },
@@ -218,16 +314,16 @@ export default {
           }
         }
         this.order = 0
-        this.occupyText = ''
       }
       this.status = 0
       this.destoryPlayer()
       this.error = ''
-      this.speed = ''
+      this.speed = null
       this.filename = null
       this.procgress = 0
       this.lastOptions = null
       this.rate = 1.0
+      this.muted = true
     },
     createHeader(player) {
       const video = player.el()
@@ -243,6 +339,7 @@ export default {
       div.appendChild(speedEl)
       player.header = {
         el: {
+          div: div,
           info: infoEl,
           speed: speedEl
         }
@@ -266,6 +363,9 @@ export default {
       }
       // 创建顶部显示条
       this.createHeader(this.player)
+      if (this.lockControlBar) {
+        this.player.controlBar.hide()
+      }
       // 正常加载流程 flv
       // ready -> loadstart -> loadedmetadata -> loadeddata -> playing
       // rtmp连接成功 但没图像
@@ -285,8 +385,8 @@ export default {
             this.error = this.getError('(flv) ' + e.msg)
           })
           flvPlayer.on(flvjs.Events.STATISTICS_INFO, (info) => {
-            this.speed = info.speed.toFixed(0) + 'kb'
-            this.updateSpeed(info.speed.toFixed(0) + ' kb/s')
+            this.speed = info.speed.toFixed(0)
+            this.updateSpeed()
           })
           this.timer = this.player.setTimeout(() => {
             this.status = 4
@@ -360,6 +460,20 @@ export default {
           }
         }
       })
+      this.player.on('fullscreenchange', () => {
+        if (this.player.isFullscreen()) {
+          this.player.controlBar.show()
+          this.player.header.el.div.setAttribute('style', 'display: flex')
+        } else {
+          if (this.lockControlBar) {
+            this.player.controlBar.hide()
+            this.player.header.el.div.removeAttribute('style')
+          }
+        }
+      })
+      this.player.on('volumechange', () => {
+        this.muted = this.player.muted()
+      })
       // this.player.on('loadeddata', () => {
       //   console.log('loadeddata')
       // })
@@ -428,6 +542,13 @@ export default {
         this.player = null
       }
     },
+    fullscreen() {
+      if (this.player) {
+        if (!this.player.isFullscreen()) {
+          this.player.requestFullscreen()
+        }
+      }
+    },
     getError(error) {
       return '<p>' + this.lastOptions.text + '</p><p>' + error + '</p>'
     },
@@ -473,11 +594,11 @@ export default {
       if (this.status === 0) {
         this.order = order
         this.status = 1
-        this.occupyText = text
         this.lastOptions = {
           data: {
             unique: unique
-          }
+          },
+          text: text
         }
       }
     },
@@ -501,14 +622,15 @@ export default {
           content: options.content
         })
       }
+      if (options.record && options.record.enabled) {
+        if (type === 'rtmp/mp4' || type === 'application/x-mpegURL') {
+          // rtmp/m3u8不支持下载
+          options.record.enabled = false
+        }
+      }
       if (this.player.fetchObj) {
         if (options.record.enabled) {
-          if (type === 'rtmp/mp4' || type === 'application/x-mpegURL') {
-            // rtmp/m3u8不支持下载
-            this.player.fetchObj.hide()
-          } else {
-            this.player.fetchObj.show()
-          }
+          this.player.fetchObj.show()
           this.player.fetchObj.updateIsLive(options.record.isLive)
         } else {
           this.player.fetchObj.hide()
@@ -563,9 +685,9 @@ export default {
         this.player.header.el.info.innerText = text
       }
     },
-    updateSpeed(speed) {
+    updateSpeed() {
       if (this.player.header) {
-        this.player.header.el.speed.innerText = speed
+        this.player.header.el.speed.innerText = this.kbps
       }
     },
     url2Filename(url) {
@@ -574,6 +696,27 @@ export default {
         return vlist[0].split('\\').pop().split('/').pop()
       } else {
         return null
+      }
+    },
+    toggleRecord() {
+      if (this.player) {
+        // 如果在录像中 需要停止录像功能
+        if (this.player.fetchFlv && this.player.fetchObj) {
+          if (this.player.fetchObj.fetching) {
+            this.player.fetchObj.stop(true)
+          } else {
+            this.player.fetchObj.start()
+          }
+        }
+      }
+    },
+    toggleMuted() {
+      if (this.player) {
+        if (this.player.muted()) {
+          this.player.muted(false)
+        } else {
+          this.player.muted(true)
+        }
       }
     }
   },
@@ -598,6 +741,8 @@ export default {
 </script>
 
 <style lang="scss">
+$footerHeight: 30px;
+
 .vvp-player {
   // cif
   width: 352px;
@@ -643,7 +788,7 @@ export default {
       }
     }
 
-    .vvp-rate {
+    .vvp-speed {
       position: absolute;
       color: #aaa;
       text-align: center;
@@ -711,6 +856,116 @@ export default {
             margin: 0 auto;
           }
         }
+      }
+    }
+  }
+
+  .vvp-footer {
+    position: absolute;
+    bottom: 0;
+    height: $footerHeight;
+    width: 100%;
+    background: rgb(30 30 30 / 72%);
+    display: none;
+    // box-sizing: border-box;
+    // border-top: 1px solid #373d3d;
+
+    .vvp-control {
+      position: relative;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      flex: none;
+      color: #aaa;
+    }
+
+    .vvp-button {
+      background: 0 0;
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+      text-transform: none;
+      text-decoration: none;
+      transition: none;
+      appearance: none;
+      width: 36px;
+      font-size: 18px;
+      line-height: $footerHeight;
+    }
+
+    .vvp-button:hover {
+      text-shadow: 0 0 1em #fff;
+      color: #ccc;
+    }
+
+    .vvp-button:active {
+      text-shadow: 0 0 1em #fff;
+      color: #fff;
+    }
+
+    .vvp-control-text {
+      line-height: $footerHeight;
+    }
+
+    .vvp-control-speed {
+      width: 55px;
+    }
+
+    .vvp-control-info {
+      width: auto;
+      flex-grow: 1;
+      text-align: left;
+      margin: 0 5px;
+    }
+
+    .vvp-icon-placeholder {
+      font-family: VideoJS;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .vvp-control-mute {
+      .vvp-icon-placeholder:before {
+        content: '\f104';
+      }
+    }
+
+    .vvp-vol-0 {
+      .vvp-icon-placeholder:before {
+        content: '\f104';
+      }
+    }
+
+    .vvp-vol-3 {
+      .vvp-icon-placeholder:before {
+        content: '\f107';
+      }
+    }
+
+    .vvp-control-fullscreen {
+      .vvp-icon-placeholder:before {
+        content: '\f108';
+        font-size: 22px;
+        line-height: $footerHeight;
+      }
+    }
+
+    .vvp-control-record {
+      .vvp-icon-placeholder:before {
+        content: '\f111';
+      }
+    }
+
+    .vvp-control-close {
+      .vvp-icon-placeholder:before {
+        content: '\f115';
+      }
+    }
+
+    .vvp-control-snap {
+      .vvp-icon-placeholder:before {
+        content: '\f10B';
       }
     }
   }
@@ -805,7 +1060,7 @@ export default {
   }
 
   .vvp-hide {
-    display: none;
+    display: none !important;
   }
 
   /**
@@ -815,6 +1070,24 @@ export default {
     .video-js {
       .vjs-tech {
         object-fit: fill;
+      }
+    }
+  }
+
+  &.vvp-footer-show {
+    .vvp-shade {
+      height: calc(100% - #{$footerHeight});
+    }
+
+    .vvp-footer {
+      display: flex;
+    }
+
+    .video-js {
+      height: calc(100% - #{$footerHeight});
+
+      .vjs-header {
+        display: none;
       }
     }
   }
