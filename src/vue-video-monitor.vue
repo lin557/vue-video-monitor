@@ -13,6 +13,7 @@
         :class="item.cls"
         @click="playerClick"
         @dblclick="playerDbClick"
+        @error="playerError"
       ></vue-video-player>
 
       <!-- 边框 -->
@@ -238,6 +239,17 @@ export default {
      */
     apply(param) {
       let player = null
+      if (param.viewIndex !== null) {
+        // 优先占用指定窗口
+        player = this.getPlayerById(VUE_PLAYER_PREFIX + param.viewIndex)
+        if (player) {
+          // 存在时关闭旧的
+          player.close()
+          player.occupy(this.newOrder(), param.unique, param.text)
+          this.setFocus(player)
+          return player.index
+        }
+      }
       if (this.duplicate) {
         // 允许重复 判断有没有空的窗口
         player = this.getIdleView()
@@ -330,6 +342,9 @@ export default {
         const player = this.getPlayerById(value.id)
         player.close()
       })
+      if (this.viewMax) {
+        this.viewMax = null
+      }
     },
     createView() {
       for (let i = 0; i < this.viewCount; i++) {
@@ -508,6 +523,9 @@ export default {
         this.viewMax = player
       }
     },
+    playerError(player, errType, errDetails, e) {
+      this.$emit('error', player, errType, errDetails, e)
+    },
     setFocus(player) {
       const lastFocus = this.getPlayerById(VUE_PLAYER_PREFIX + this.selected.id)
       if (lastFocus) {
@@ -548,6 +566,9 @@ export default {
       )
       if (selectPlayer) {
         selectPlayer.close()
+        if (this.viewMax) {
+          this.viewMax = null
+        }
       }
     },
     togglefill() {

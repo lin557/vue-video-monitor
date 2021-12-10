@@ -164,15 +164,17 @@ Apply for an idle view and occupy it to display the loading effect
 
 ```
 param = {
-  unique: unique
-  text: text
+  unique: unique,
+  text: text,
+  viewIndex: null
 }
 ```
 
-| Property | Description                                                  | Type   | Default      |
-| -------- | ------------------------------------------------------------ | ------ | ------------ |
-| unique   | Specified by the **options.data.unique** parameter of the play() method | string |              |
-| text     | loading text                                                 | string | empty string |
+| Property  | Description                                                  | Type   | Default      |
+| --------- | ------------------------------------------------------------ | ------ | ------------ |
+| unique    | Specified by the **options.data.unique** parameter of the play() method | string |              |
+| text      | loading text                                                 | string | empty string |
+| viewIndex | Occupy the specified window, if the window is playing, it will be closed and reoccupied | number | null         |
 
 
 
@@ -272,6 +274,20 @@ Stop a video player that is playing
 ### togglefill()
 
 Switch whether the video screen is full
+
+
+
+## Events
+
+
+
+### error
+
+Triggered when there is an error in playing flv
+
+error(player, errType, errDetails, e)
+
+
 
 
 

@@ -102,8 +102,6 @@ flvjs.LoggingControl.enableError = false
 
 // 超过5个process 都没有收到音频流 自动重载播放器
 const ERR_MAX_AUDIO_COUNT = 6
-// 网络超时25秒
-const ERR_NETWORK_TIMEOUT = 25000
 
 const defaults = {
   autoplay: true,
@@ -383,15 +381,44 @@ export default {
           flvPlayer.on(flvjs.Events.ERROR, (errType, errDetails, e) => {
             this.status = 4
             this.error = this.getError('(flv) ' + e.msg)
+            switch (errType) {
+              case flvjs.ErrorTypes.NETWORK_ERROR:
+                // 存在多种情况 以下是常见几种
+                // ERR_FAILED 504 连接到srs 超过1分钟一直没有等到流时提示  Exception
+                // ERR_CONNECTION_REFUSED 访问到一个不存在的IP地址时 Exception
+                // ERR_CONNECTION_TIMED_OUT IP地址存在 端口不存在时 Exception
+                // ERR_INCOMPLETE_CHUNKED_ENCODING 服务器停止推流 UnrecoverableEarlyEof
+                this.$emit('error', this, errType, errDetails, e)
+                break
+              case flvjs.ErrorTypes.MEDIA_ERROR:
+                break
+              case flvjs.ErrorTypes.OTHER_ERROR:
+                break
+            }
           })
           flvPlayer.on(flvjs.Events.STATISTICS_INFO, (info) => {
             this.speed = info.speed.toFixed(0)
             this.updateSpeed()
           })
-          this.timer = this.player.setTimeout(() => {
-            this.status = 4
-            this.error = this.getError('(flv) connect timeout')
-          }, ERR_NETWORK_TIMEOUT)
+          // flvPlayer.on(flvjs.Events.LOADING_COMPLETE, (e) => {
+          //   console.log(e)
+          // })
+          // flvPlayer.on(flvjs.Events.RECOVERED_EARLY_EOF, (e) => {
+          //   console.log(e)
+          // })
+          // flvPlayer.on(flvjs.Events.MEDIA_INFO, (e) => {
+          //   console.log(e)
+          // })
+          // flvPlayer.on(flvjs.Events.METADATA_ARRIVED, (e) => {
+          //   console.log(e)
+          // })
+          // flvPlayer.on(flvjs.Events.SCRIPTDATA_ARRIVED, (e) => {
+          //   console.log(e)
+          // })
+          // this.timer = this.player.setTimeout(() => {
+          //   this.status = 4
+          //   this.error = this.getError('(flv) connect timeout')
+          // }, ERR_NETWORK_TIMEOUT)
         }
         if (!this.player.fetchObj) {
           this.player.fetchObj = this.player.fetchFlv({

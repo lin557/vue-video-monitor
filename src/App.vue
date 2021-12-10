@@ -8,6 +8,7 @@
         :lockControlBar="true"
         :focused="true"
         :duplicate="false"
+        @error="doError"
         ref="monitor"
       />
       <div class="demo">
@@ -78,11 +79,11 @@ export default {
           title: 'oceans.mp4'
         },
         {
-          src: 'http://219.138.167.86:8588/mdvr/live/16800002099_2.flv',
+          src: 'http://219.138.167.86:58588/mdvr/live/16800002099_2.flv',
           title: 'v.laifeng.flv'
         },
         {
-          src: 'http://221.237.209.57:9085/mdvr/live/15981010746_1.flv',
+          src: 'http://219.138.167.86:8586/mdvr/live/16800002099_1.flv',
           title: '15981010746_1.flv'
         }
       ]
@@ -94,6 +95,9 @@ export default {
     },
     controlShow() {
       this.controlBar.enabled = true
+    },
+    doError(player, errType, errDetails, e) {
+      console.log(player, errType, errDetails, e)
     },
     getSelected() {
       console.log(this.$refs.monitor.getSelected())
@@ -117,10 +121,10 @@ export default {
           }
         ],
         isLive: false,
-        viewIndex: 1,
+        // viewIndex: 1,
         hasAudio: true,
         data: {
-          unique: 'aaa',
+          //unique: 'aaa',
           user: {
             a: 1,
             b: 2
@@ -129,8 +133,8 @@ export default {
         record: {
           enabled: true,
           isLive: true
-        },
-        text: '00209 CH2'
+        }
+        //text: '00209 CH2'
       })
     },
     test() {
