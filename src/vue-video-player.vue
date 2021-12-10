@@ -205,10 +205,8 @@ export default {
       error: '',
       // 当http-flv头有音视频 但http-flv没有音频流时 自动重置播放器
       autoAudio: true,
-      procgress: 0,
+      progress: 0,
       lastOptions: null,
-      // 连接超时定时器
-      timer: null,
       filename: null,
       muted: true,
       suffix: null,
@@ -217,7 +215,9 @@ export default {
       // 创建时间(或占用时间)
       order: 0,
       // 播放速率
-      rate: 1.0
+      rate: 1.0,
+      lastDecodedFrame: 0,
+      lastDecodedCount: 0
     }
   },
   computed: {
@@ -296,12 +296,6 @@ export default {
     }
   },
   methods: {
-    clearTimer() {
-      if (this.timer && this.player) {
-        this.player.clearTimeout(this.timer)
-        this.timer = null
-      }
-    },
     close() {
       if (this.player) {
         // this.player.reset()
@@ -315,13 +309,16 @@ export default {
       }
       this.status = 0
       this.destoryPlayer()
+      this.autoAudio = true
       this.error = ''
       this.speed = null
       this.filename = null
-      this.procgress = 0
+      this.progress = 0
       this.lastOptions = null
       this.rate = 1.0
       this.muted = true
+      this.lastDecodedCount = 0
+      this.lastDecodedFrame = 0
     },
     createHeader(player) {
       const video = player.el()
@@ -399,26 +396,30 @@ export default {
           flvPlayer.on(flvjs.Events.STATISTICS_INFO, (info) => {
             this.speed = info.speed.toFixed(0)
             this.updateSpeed()
+            if (this.lastDecodedFrame === 0) {
+              this.lastDecodedFrame = info.decodedFrames
+              return
+            }
+            if (this.lastDecodedFrame !== info.decodedFrames) {
+              this.lastDecodedFrame = info.decodedFrames
+              this.lastDecodedCount = 0
+            } else {
+              this.lastDecodedCount++
+              // 30 约等于18秒 画面卡死时重连
+              if (this.lastDecodedCount >= 30) {
+                this.lastDecodedCount = 0
+                this.lastDecodedFrame = 0
+                if (this.connect && this.connect.auto) {
+                  this.player.setTimeout(() => {
+                    window.console.warn(
+                      this.lastOptions.src + ' decoded error. reconnect. '
+                    )
+                    this.play(this.lastOptions)
+                  }, 300)
+                }
+              }
+            }
           })
-          // flvPlayer.on(flvjs.Events.LOADING_COMPLETE, (e) => {
-          //   console.log(e)
-          // })
-          // flvPlayer.on(flvjs.Events.RECOVERED_EARLY_EOF, (e) => {
-          //   console.log(e)
-          // })
-          // flvPlayer.on(flvjs.Events.MEDIA_INFO, (e) => {
-          //   console.log(e)
-          // })
-          // flvPlayer.on(flvjs.Events.METADATA_ARRIVED, (e) => {
-          //   console.log(e)
-          // })
-          // flvPlayer.on(flvjs.Events.SCRIPTDATA_ARRIVED, (e) => {
-          //   console.log(e)
-          // })
-          // this.timer = this.player.setTimeout(() => {
-          //   this.status = 4
-          //   this.error = this.getError('(flv) connect timeout')
-          // }, ERR_NETWORK_TIMEOUT)
         }
         if (!this.player.fetchObj) {
           this.player.fetchObj = this.player.fetchFlv({
@@ -456,8 +457,8 @@ export default {
             }
           }
 
-          this.procgress++
-          if (this.procgress >= ERR_MAX_AUDIO_COUNT) {
+          this.progress++
+          if (this.progress >= ERR_MAX_AUDIO_COUNT) {
             window.console.warn(
               this.lastOptions.src +
                 ' has no audio data, video will auto reset to play.'
@@ -564,7 +565,6 @@ export default {
     },
     destoryPlayer() {
       if (this.player) {
-        this.clearTimer()
         this.player.dispose()
         this.player = null
       }
@@ -748,16 +748,7 @@ export default {
     }
   },
   mounted() {},
-  watch: {
-    status(val) {
-      switch (val) {
-        case 3:
-        case 4:
-          this.clearTimer()
-          break
-      }
-    }
-  },
+  watch: {},
   created() {
     this.id = 'vvp-' + this.randomString(16)
   },

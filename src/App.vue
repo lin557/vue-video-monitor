@@ -79,7 +79,7 @@ export default {
           title: 'oceans.mp4'
         },
         {
-          src: 'http://219.138.167.86:58588/mdvr/live/16800002099_2.flv',
+          src: 'http://221.237.209.57:9087/mdvr/live/15981010750_1.flv',
           title: 'v.laifeng.flv'
         },
         {
