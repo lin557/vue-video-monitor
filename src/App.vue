@@ -83,8 +83,8 @@ export default {
           title: 'v.laifeng.flv'
         },
         {
-          src: 'http://219.138.167.86:8586/mdvr/live/16800002099_1.flv',
-          title: '15981010746_1.flv'
+          src: 'http://219.138.167.86:8585/mdvr/live/16800000218_1.flv',
+          title: '16800000218_1.flv'
         }
       ]
     }

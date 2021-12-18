@@ -45,6 +45,22 @@ npm install --save video.js videojs-flvjs-es6 flv.js videojs-fetch-flv videojs-c
 
 To include vue-video-monitor on your website or web application, use any of the following methods.
 
+
+
+#### Fully import
+
+In main.js:
+
+```js
+import Vue from 'vue'
+import VueVideoMonitor from 'vue-video-monitor'
+Vue.use(VueVideoMonitor)
+```
+
+
+
+#### On demand
+
 ```vue
 <template>
   <div class="video-view center">

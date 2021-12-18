@@ -13,7 +13,7 @@
         :class="item.cls"
         @click="playerClick"
         @dblclick="playerDbClick"
-        @error="playerError"
+        @vvperror="playerError"
       ></vue-video-player>
 
       <!-- 边框 -->

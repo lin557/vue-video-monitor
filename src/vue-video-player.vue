@@ -385,7 +385,7 @@ export default {
                 // ERR_CONNECTION_REFUSED 访问到一个不存在的IP地址时 Exception
                 // ERR_CONNECTION_TIMED_OUT IP地址存在 端口不存在时 Exception
                 // ERR_INCOMPLETE_CHUNKED_ENCODING 服务器停止推流 UnrecoverableEarlyEof
-                this.$emit('error', this, errType, errDetails, e)
+                this.$emit('vvperror', this, errType, errDetails, e)
                 break
               case flvjs.ErrorTypes.MEDIA_ERROR:
                 break
@@ -883,10 +883,8 @@ $footerHeight: 30px;
     bottom: 0;
     height: $footerHeight;
     width: 100%;
-    background: rgb(30 30 30 / 72%);
+    background: rgba(30, 30, 30, 72%);
     display: none;
-    // box-sizing: border-box;
-    // border-top: 1px solid #373d3d;
 
     .vvp-control {
       position: relative;
@@ -1107,6 +1105,10 @@ $footerHeight: 30px;
       .vjs-header {
         display: none;
       }
+    }
+
+    .vjs-has-started .vjs-fetch-flv-ctx {
+      top: 0px !important;
     }
   }
 }
