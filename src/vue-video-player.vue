@@ -736,9 +736,8 @@ export default {
       }
     },
     toggleRecord() {
-      if (this.player) {
-        // 如果在录像中 需要停止录像功能
-        if (this.fetching) {
+      if (this.player && this.player.fetchFlv && this.player.fetchObj) {
+        if (this.player.fetchObj.fetching) {
           this.player.fetchObj.stop(true)
         } else {
           this.player.fetchObj.start()

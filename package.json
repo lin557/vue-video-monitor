@@ -1,6 +1,6 @@
 {
   "name": "vue-video-monitor",
-  "version": "1.4.0",
+  "version": "1.4.2",
   "description": "Multi-window video player",
   "private": false,
   "main": "dist/vue-video-monitor.umd.js",
@@ -26,7 +26,7 @@
     "flv.js": "^1.6.2",
     "video.js": "^7.15.4",
     "videojs-contextmenu-pt": "^5.4.1",
-    "videojs-fetch-flv": "^1.0.10",
+    "videojs-fetch-flv": "^1.0.11",
     "videojs-flvjs-es6": "^1.0.1",
     "vue": "^2.6.11"
   },
