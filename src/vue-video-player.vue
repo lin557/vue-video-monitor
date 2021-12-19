@@ -217,7 +217,8 @@ export default {
       // 播放速率
       rate: 1.0,
       lastDecodedFrame: 0,
-      lastDecodedCount: 0
+      lastDecodedCount: 0,
+      fetching: false
     }
   },
   computed: {
@@ -284,15 +285,19 @@ export default {
       }
     },
     recordCls() {
+      let cls = ''
       if (
         this.lastOptions &&
         this.lastOptions.record &&
         this.lastOptions.record.enabled
       ) {
-        return ''
+        if (this.fetching) {
+          cls = 'vvp-fetching'
+        }
       } else {
-        return 'vvp-hide'
+        cls = 'vvp-hide'
       }
+      return cls
     }
   },
   methods: {
@@ -300,10 +305,8 @@ export default {
       if (this.player) {
         // this.player.reset()
         // 如果在录像中 需要停止录像功能
-        if (this.player.fetchFlv && this.player.fetchObj) {
-          if (this.player.fetchObj.fetching) {
-            this.player.fetchObj.stop(false)
-          }
+        if (this.fetching) {
+          this.player.fetchObj.stop(false)
         }
         this.order = 0
       }
@@ -319,6 +322,7 @@ export default {
       this.muted = true
       this.lastDecodedCount = 0
       this.lastDecodedFrame = 0
+      this.fetching = false
     },
     createHeader(player) {
       const video = player.el()
@@ -447,6 +451,12 @@ export default {
       //   // console.log('playing')
       //   // 一直执行
       // })
+      this.player.on('fetchStart', () => {
+        this.fetching = true
+      })
+      this.player.on('fetchStop', () => {
+        this.fetching = false
+      })
       this.player.on('progress', () => {
         // console.log('progress')
         if (this.autoAudio && this.lastOptions.hasAudio) {
@@ -728,12 +738,10 @@ export default {
     toggleRecord() {
       if (this.player) {
         // 如果在录像中 需要停止录像功能
-        if (this.player.fetchFlv && this.player.fetchObj) {
-          if (this.player.fetchObj.fetching) {
-            this.player.fetchObj.stop(true)
-          } else {
-            this.player.fetchObj.start()
-          }
+        if (this.fetching) {
+          this.player.fetchObj.stop(true)
+        } else {
+          this.player.fetchObj.start()
         }
       }
     },
@@ -970,6 +978,12 @@ $footerHeight: 30px;
     .vvp-control-record {
       .vvp-icon-placeholder:before {
         content: '\f111';
+      }
+    }
+
+    .vvp-fetching {
+      .vvp-icon-placeholder:before {
+        color: #f00;
       }
     }
 

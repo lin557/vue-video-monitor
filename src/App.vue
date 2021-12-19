@@ -79,12 +79,8 @@ export default {
           title: 'oceans.mp4'
         },
         {
-          src: 'http://221.237.209.57:9087/mdvr/live/15981010750_1.flv',
+          src: 'https://hlsflv-liveshow.bdstatic.com/live/stream_bduid_967776424_5062758155-L1.flv',
           title: 'v.laifeng.flv'
-        },
-        {
-          src: 'http://219.138.167.86:8585/mdvr/live/16800000218_1.flv',
-          title: '16800000218_1.flv'
         }
       ]
     }
