@@ -79,7 +79,7 @@ export default {
           title: 'oceans.mp4'
         },
         {
-          src: 'https://hlsflv-liveshow.bdstatic.com/live/stream_bduid_967776424_5062758155-L11.flv',
+          src: 'https://www.bmtasmartbus.com:9089/mdvr/live/2219501718_1.flv',
           title: 'v.laifeng.flv'
         }
       ]
@@ -117,6 +117,7 @@ export default {
           }
         ],
         isLive: false,
+        allowPause: true,
         // viewIndex: 1,
         hasAudio: true,
         data: {

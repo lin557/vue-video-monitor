@@ -1,6 +1,6 @@
 {
   "name": "vue-video-monitor",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Multi-window video player",
   "private": false,
   "main": "dist/vue-video-monitor.umd.js",
@@ -17,6 +17,7 @@
   "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "build-bundle": "vue-cli-service build --target lib --name vue-video-monitor ./src/index.js",

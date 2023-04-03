@@ -603,6 +603,32 @@ module.exports = function (it) {
 
 /***/ }),
 
+/***/ "1dde":
+/***/ (function(module, exports, __webpack_require__) {
+
+var fails = __webpack_require__("d039");
+var wellKnownSymbol = __webpack_require__("b622");
+var V8_VERSION = __webpack_require__("2d00");
+
+var SPECIES = wellKnownSymbol('species');
+
+module.exports = function (METHOD_NAME) {
+  // We can't use this feature detection in V8 since it causes
+  // deoptimization and serious performance degradation
+  // https://github.com/zloirock/core-js/issues/677
+  return V8_VERSION >= 51 || !fails(function () {
+    var array = [];
+    var constructor = array.constructor = {};
+    constructor[SPECIES] = function () {
+      return { foo: 1 };
+    };
+    return array[METHOD_NAME](Boolean).foo !== 1;
+  });
+};
+
+
+/***/ }),
+
 /***/ "23cb":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2040,6 +2066,24 @@ module.exports = !fails(function () {
 
 /***/ }),
 
+/***/ "8418":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var toPropertyKey = __webpack_require__("a04b");
+var definePropertyModule = __webpack_require__("9bf2");
+var createPropertyDescriptor = __webpack_require__("5c6c");
+
+module.exports = function (object, key, value) {
+  var propertyKey = toPropertyKey(key);
+  if (propertyKey in object) definePropertyModule.f(object, propertyKey, createPropertyDescriptor(0, value));
+  else object[propertyKey] = value;
+};
+
+
+/***/ }),
+
 /***/ "861d":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2364,6 +2408,75 @@ module.exports = isForced;
 /***/ (function(module, exports) {
 
 module.exports = __WEBPACK_EXTERNAL_MODULE__9767__;
+
+/***/ }),
+
+/***/ "99af":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__("23e7");
+var fails = __webpack_require__("d039");
+var isArray = __webpack_require__("e8b5");
+var isObject = __webpack_require__("861d");
+var toObject = __webpack_require__("7b0b");
+var lengthOfArrayLike = __webpack_require__("07fa");
+var createProperty = __webpack_require__("8418");
+var arraySpeciesCreate = __webpack_require__("65f0");
+var arrayMethodHasSpeciesSupport = __webpack_require__("1dde");
+var wellKnownSymbol = __webpack_require__("b622");
+var V8_VERSION = __webpack_require__("2d00");
+
+var IS_CONCAT_SPREADABLE = wellKnownSymbol('isConcatSpreadable');
+var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
+var MAXIMUM_ALLOWED_INDEX_EXCEEDED = 'Maximum allowed index exceeded';
+
+// We can't use this feature detection in V8 since it causes
+// deoptimization and serious performance degradation
+// https://github.com/zloirock/core-js/issues/679
+var IS_CONCAT_SPREADABLE_SUPPORT = V8_VERSION >= 51 || !fails(function () {
+  var array = [];
+  array[IS_CONCAT_SPREADABLE] = false;
+  return array.concat()[0] !== array;
+});
+
+var SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('concat');
+
+var isConcatSpreadable = function (O) {
+  if (!isObject(O)) return false;
+  var spreadable = O[IS_CONCAT_SPREADABLE];
+  return spreadable !== undefined ? !!spreadable : isArray(O);
+};
+
+var FORCED = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
+
+// `Array.prototype.concat` method
+// https://tc39.es/ecma262/#sec-array.prototype.concat
+// with adding support of @@isConcatSpreadable and @@species
+$({ target: 'Array', proto: true, forced: FORCED }, {
+  // eslint-disable-next-line no-unused-vars -- required for `.length`
+  concat: function concat(arg) {
+    var O = toObject(this);
+    var A = arraySpeciesCreate(O, 0);
+    var n = 0;
+    var i, k, length, len, E;
+    for (i = -1, length = arguments.length; i < length; i++) {
+      E = i === -1 ? O : arguments[i];
+      if (isConcatSpreadable(E)) {
+        len = lengthOfArrayLike(E);
+        if (n + len > MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
+        for (k = 0; k < len; k++, n++) if (k in E) createProperty(A, n, E[k]);
+      } else {
+        if (n >= MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
+        createProperty(A, n++, E);
+      }
+    }
+    A.length = n;
+    return A;
+  }
+});
+
 
 /***/ }),
 
@@ -3297,6 +3410,17 @@ module.exports = function (V, P) {
 
 /***/ }),
 
+/***/ "dd00":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_3_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_vue_video_bar_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("fb47");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_3_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_vue_video_bar_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_ref_8_oneOf_1_0_node_modules_css_loader_dist_cjs_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_3_node_modules_sass_loader_dist_cjs_js_ref_8_oneOf_1_4_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_vue_video_bar_vue_vue_type_style_index_0_lang_scss___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+
+
+/***/ }),
+
 /***/ "df75":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3356,6 +3480,20 @@ var classof = __webpack_require__("c6b6");
 module.exports = Array.isArray || function isArray(argument) {
   return classof(argument) == 'Array';
 };
+
+
+/***/ }),
+
+/***/ "eb06":
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".vvp-bar-wrapper{position:absolute;top:-11px;height:11px;width:100%;z-index:10;cursor:pointer}.vvp-bar-wrapper .vvp-bar-time{position:absolute;left:0;top:-20px;border-radius:4px;padding:5px 7px;background-color:rgba(0,0,0,.62);color:#fff;font-size:12px;text-align:center;opacity:1;transition:opacity .1s ease-in-out;word-wrap:normal;word-break:normal;z-index:2;pointer-events:none;display:none}.vvp-bar-wrapper .vvp-bar-inner{margin-top:8px;height:3px;width:calc(100% - 2px);margin-left:1px;margin-right:1px;background-color:hsla(0,0%,100%,.3)}.vvp-bar-wrapper .vvp-bar-inner .vvp-bar-played{height:100%;width:100px;z-index:1;position:relative}.vvp-bar-wrapper .vvp-bar-inner .vvp-bar-played .vvp-bar-thumb{width:9px;height:9px;z-index:2;border:1px solid hsla(0,0%,100%,.6);border-radius:5px;position:absolute;right:-4px;top:-2px;transition:all .2s ease-in-out;transform:scale(0);pointer-events:none}.vvp-bar-wrapper:hover .vvp-bar-inner{margin-top:6px;height:5px}.vvp-bar-wrapper:hover .vvp-bar-inner .vvp-bar-played .vvp-bar-thumb{top:-3px;transform:scale(1)}.vvp-bar-wrapper:hover .vvp-bar-time{display:block}", ""]);
+// Exports
+module.exports = exports;
 
 
 /***/ }),
@@ -3483,12 +3621,12 @@ var es_regexp_exec = __webpack_require__("ac1f");
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.string.split.js
 var es_string_split = __webpack_require__("1276");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"6727a729-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-player.vue?vue&type=template&id=b2c6d172&
-var vue_video_playervue_type_template_id_b2c6d172_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"vvplayer",staticClass:"vvp-player",class:_vm.fillCls,on:{"click":_vm.handleClick,"dblclick":_vm.handleDblClick}},[_c('div',{staticClass:"vvp-shade",class:_vm.loadingCls},[_c('div',{staticClass:"vjs-loading-spinner"},[_c('span',{staticClass:"vvp-speed"},[_vm._v(_vm._s(_vm.kb))])]),_c('div',{staticClass:"vvp-occupy"},[_vm._v(_vm._s(_vm.infoText))]),_c('div',{staticClass:"vvp-error-ctx"},[_c('div',{staticClass:"vvp-error-button"},[_c('span',{on:{"click":function($event){return _vm.close()}}})]),_c('div',{staticClass:"vvp-error-text",domProps:{"innerHTML":_vm._s(_vm.error)}})])]),_c('div',{staticClass:"vvp-focus",class:_vm.focusCls}),_c('div',{staticClass:"vvp-footer"},[_c('button',{staticClass:"vvp-control vvp-button vvp-control-mute",class:_vm.mutedCls,attrs:{"type":"button","title":"Pause","aria-disabled":"false"},on:{"click":function($event){return _vm.toggleMuted()}}},[_c('span',{staticClass:"vvp-icon-placeholder",attrs:{"aria-hidden":"true"}})]),_c('div',{staticClass:"vvp-control vvp-control-text vvp-control-info"},[_vm._v(" "+_vm._s(_vm.infoText)+" ")]),_c('div',{staticClass:"vvp-control vvp-control-text vvp-control-speed"},[_vm._v(" "+_vm._s(_vm.kbps)+" ")]),_c('button',{staticClass:"vvp-control vvp-button vvp-control-record",class:_vm.recordCls,attrs:{"type":"button","title":"record","aria-disabled":"false"},on:{"click":function($event){return _vm.toggleRecord()}}},[_c('span',{staticClass:"vvp-icon-placeholder",attrs:{"aria-hidden":"true"}})]),_c('button',{staticClass:"vvp-control vvp-button vvp-control-fullscreen",attrs:{"type":"button","title":"Fullscreen","aria-disabled":"false"},on:{"click":function($event){return _vm.fullscreen()}}},[_c('span',{staticClass:"vvp-icon-placeholder",attrs:{"aria-hidden":"true"}})]),_c('button',{staticClass:"vvp-control vvp-button vvp-control-close",attrs:{"type":"button","title":"Close","aria-disabled":"false"},on:{"click":function($event){return _vm.close()}}},[_c('span',{staticClass:"vvp-icon-placeholder",attrs:{"aria-hidden":"true"}})])])])}
-var vue_video_playervue_type_template_id_b2c6d172_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"6727a729-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-player.vue?vue&type=template&id=1a03bade&
+var vue_video_playervue_type_template_id_1a03bade_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"vvplayer",staticClass:"vvp-player",class:_vm.fillCls,on:{"click":_vm.handleClick,"dblclick":_vm.handleDblClick}},[_c('div',{staticClass:"vvp-shade",class:_vm.loadingCls},[_c('div',{staticClass:"vjs-loading-spinner"},[_c('span',{staticClass:"vvp-speed"},[_vm._v(_vm._s(_vm.kb))])]),_c('div',{staticClass:"vvp-occupy"},[_vm._v(_vm._s(_vm.infoText))]),_c('div',{staticClass:"vvp-error-ctx"},[_c('div',{staticClass:"vvp-error-button"},[_c('span',{on:{"click":function($event){return _vm.close()}}})]),_c('div',{staticClass:"vvp-error-text",domProps:{"innerHTML":_vm._s(_vm.error)}})])]),_c('div',{staticClass:"vvp-focus",class:_vm.focusCls}),_c('div',{staticClass:"vvp-footer"},[(false)?undefined:_vm._e(),(_vm.allowPause)?_c('button',{staticClass:"vvp-control vvp-button vvp-control-play",class:_vm.pauseCls,attrs:{"type":"button","title":"Pause","aria-disabled":"false"},on:{"click":function($event){return _vm.togglePlay()}}},[_c('span',{staticClass:"vvp-icon-placeholder",attrs:{"aria-hidden":"true"}})]):_vm._e(),_c('button',{staticClass:"vvp-control vvp-button vvp-control-mute",class:_vm.mutedCls,attrs:{"type":"button","title":"Muted","aria-disabled":"false"},on:{"click":function($event){return _vm.toggleMuted()}}},[_c('span',{staticClass:"vvp-icon-placeholder",attrs:{"aria-hidden":"true"}})]),_c('div',{staticClass:"vvp-control vvp-control-text vvp-control-info"},[_vm._v(" "+_vm._s(_vm.infoText)+" ")]),_c('div',{staticClass:"vvp-control vvp-control-text vvp-control-speed"},[_vm._v(" "+_vm._s(_vm.kbps)+" ")]),_c('button',{staticClass:"vvp-control vvp-button vvp-control-record",class:_vm.recordCls,attrs:{"type":"button","title":"Record","aria-disabled":"false"},on:{"click":function($event){return _vm.toggleRecord()}}},[_c('span',{staticClass:"vvp-icon-placeholder",attrs:{"aria-hidden":"true"}})]),_c('button',{staticClass:"vvp-control vvp-button vvp-control-fullscreen",attrs:{"type":"button","title":"Fullscreen","aria-disabled":"false"},on:{"click":function($event){return _vm.fullscreen()}}},[_c('span',{staticClass:"vvp-icon-placeholder",attrs:{"aria-hidden":"true"}})]),_c('button',{staticClass:"vvp-control vvp-button vvp-control-close",attrs:{"type":"button","title":"Close","aria-disabled":"false"},on:{"click":function($event){return _vm.close()}}},[_c('span',{staticClass:"vvp-icon-placeholder",attrs:{"aria-hidden":"true"}})])],1)])}
+var vue_video_playervue_type_template_id_1a03bade_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/vue-video-player.vue?vue&type=template&id=b2c6d172&
+// CONCATENATED MODULE: ./src/vue-video-player.vue?vue&type=template&id=1a03bade&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.fill.js
 var es_array_fill = __webpack_require__("cb29");
@@ -3518,6 +3656,249 @@ var external_videojs_contextmenu_pt_ = __webpack_require__("fa83");
 // EXTERNAL MODULE: ./node_modules/videojs-contextmenu-pt/dist/videojs-contextmenu-pt.css
 var videojs_contextmenu_pt = __webpack_require__("007b");
 
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"6727a729-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-bar.vue?vue&type=template&id=4df6f86b&
+var vue_video_barvue_type_template_id_4df6f86b_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"bar",staticClass:"vvp-bar-wrapper",on:{"mousemove":_vm.handleMouseMove}},[_c('div',{staticClass:"vvp-bar-time",style:(_vm.timeStyle)},[_vm._v(_vm._s(_vm.timeText))]),_c('div',{staticClass:"vvp-bar-inner"},[_c('div',{staticClass:"vvp-bar-played",style:(_vm.barWidth)},[_c('span',{staticClass:"vvp-bar-thumb",style:(_vm.thumbStyle)})])])])}
+var vue_video_barvue_type_template_id_4df6f86b_staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./src/vue-video-bar.vue?vue&type=template&id=4df6f86b&
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.concat.js
+var es_array_concat = __webpack_require__("99af");
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-bar.vue?vue&type=script&lang=js&
+
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ var vue_video_barvue_type_script_lang_js_ = ({
+  name: 'VueVideoBar',
+  props: {
+    position: {
+      type: Number,
+      default: function _default() {
+        return 0;
+      }
+    },
+    duration: {
+      type: Number,
+      default: function _default() {
+        return 100;
+      }
+    },
+    themeColor: {
+      type: String,
+      default: '#2D4EDF'
+    }
+  },
+  computed: {
+    thumbStyle: function thumbStyle() {
+      return 'background: ' + this.themeColor;
+    },
+    barWidth: function barWidth() {
+      var cur = this.position / this.duration;
+
+      if (cur < 0) {
+        cur = 0;
+      }
+
+      if (cur > 1) {
+        cur = 1;
+      }
+
+      var width = this.getWidth() * cur;
+      return 'background: ' + this.themeColor + ';width: ' + width + 'px';
+    },
+    timeStyle: function timeStyle() {
+      return 'left: ' + this.timeLeft + 'px';
+    },
+    timeText: function timeText() {
+      return this.getTime(this.timeMove);
+    }
+  },
+  data: function data() {
+    return {
+      timeLeft: 0,
+      timeMove: 0
+    };
+  },
+  methods: {
+    handleMouseMove: function handleMouseMove(e) {
+      this.timeLeft = e.offsetX - 30;
+      this.timeMove = this.px2second(e.offsetX);
+      console.log(this.timeMove);
+    },
+    getWidth: function getWidth() {
+      if (this.$refs.bar) {
+        return this.$refs.bar.clientWidth;
+      } else {
+        return 0;
+      }
+    },
+
+    /**
+     * 像素转秒
+     */
+    px2second: function px2second(offsetX) {
+      var width = this.getWidth();
+
+      if (width === 0) {
+        return 0;
+      } // 1像素多长时间
+
+
+      var pxTime = this.duration / width;
+      return offsetX * pxTime;
+    },
+    getTime: function getTime(t) {
+      // 小时： h = parseInt(总秒数 / 60 / 60 % 24)
+      // 分钟： m = parseInt(总秒数 / 60 % 60)
+      // 秒：   s = parseInt(总秒数 % 60)
+      var h = parseInt(t / 60 / 60 % 24);
+      var m = parseInt(t / 60 % 60);
+      var s = parseInt(t % 60); // 因为h已经是数字型了，如果0不加引号就变成加法了
+
+      h = h < 10 ? '0' + h : h;
+      m = m < 10 ? '0' + m : m;
+      s = s < 10 ? '0' + s : s;
+      return "".concat(h, ":").concat(m, ":").concat(s);
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/vue-video-bar.vue?vue&type=script&lang=js&
+ /* harmony default export */ var src_vue_video_barvue_type_script_lang_js_ = (vue_video_barvue_type_script_lang_js_); 
+// EXTERNAL MODULE: ./src/vue-video-bar.vue?vue&type=style&index=0&lang=scss&
+var vue_video_barvue_type_style_index_0_lang_scss_ = __webpack_require__("dd00");
+
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+function normalizeComponent (
+  scriptExports,
+  render,
+  staticRenderFns,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier, /* server only */
+  shadowMode /* vue-cli only */
+) {
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (render) {
+    options.render = render
+    options.staticRenderFns = staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = 'data-v-' + scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = shadowMode
+      ? function () {
+        injectStyles.call(
+          this,
+          (options.functional ? this.parent : this).$root.$options.shadowRoot
+        )
+      }
+      : injectStyles
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functional component in vue file
+      var originalRender = options.render
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return originalRender(h, context)
+      }
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    }
+  }
+
+  return {
+    exports: scriptExports,
+    options: options
+  }
+}
+
+// CONCATENATED MODULE: ./src/vue-video-bar.vue
+
+
+
+
+
+
+/* normalize component */
+
+var component = normalizeComponent(
+  src_vue_video_barvue_type_script_lang_js_,
+  vue_video_barvue_type_template_id_4df6f86b_render,
+  vue_video_barvue_type_template_id_4df6f86b_staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* harmony default export */ var vue_video_bar = (component.exports);
 // EXTERNAL MODULE: external "flv.js"
 var external_flv_js_ = __webpack_require__("480f");
 var external_flv_js_default = /*#__PURE__*/__webpack_require__.n(external_flv_js_);
@@ -3611,6 +3992,19 @@ var external_flv_js_default = /*#__PURE__*/__webpack_require__.n(external_flv_js
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -3669,10 +4063,14 @@ var playerOptions = {
     user: null
   },
   hasAudio: true,
+  allowPause: false,
   text: ''
 };
 /* harmony default export */ var vue_video_playervue_type_script_lang_js_ = ({
   name: 'VueVideoPlayer',
+  components: {
+    VueVideoBar: vue_video_bar
+  },
   props: {
     // 自动追帧
     autoRate: {
@@ -3741,7 +4139,11 @@ var playerOptions = {
       rate: 1.0,
       lastDecodedFrame: 0,
       lastDecodedCount: 0,
-      fetching: false
+      fetching: false,
+      currentTime: 0,
+      allowPause: false,
+      // 手动暂停
+      paused: false
     };
   },
   computed: {
@@ -3812,6 +4214,13 @@ var playerOptions = {
         return 'vvp-vol-3';
       }
     },
+    pauseCls: function pauseCls() {
+      if (this.paused) {
+        return 'vvp-control-pause';
+      } else {
+        return '';
+      }
+    },
     recordCls: function recordCls() {
       var cls = '';
 
@@ -3851,6 +4260,8 @@ var playerOptions = {
       this.lastDecodedCount = 0;
       this.lastDecodedFrame = 0;
       this.fetching = false;
+      this.allowPause = false;
+      this.paused = false;
     },
     createHeader: function createHeader(player) {
       var video = player.el(); // Create div element
@@ -3973,7 +4384,7 @@ var playerOptions = {
         }
       });
       this.player.on('loadeddata', function () {
-        _this.status = 3;
+        _this.status = 3; // console.log(this.player.duration())
       });
       this.player.on('durationchange', function () {
         if (!_this.player.controlBar.liveDisplay.hasClass('vjs-hidden')) {
@@ -3987,7 +4398,9 @@ var playerOptions = {
       });
       this.player.on('pause', function () {
         // 不允许隐藏时暂停
-        _this.player.play();
+        if (!_this.paused) {
+          _this.player.play();
+        }
       }); // this.player.on('playing', () => {
       //   // console.log('playing')
       //   // 一直执行
@@ -4000,7 +4413,6 @@ var playerOptions = {
         _this.fetching = false;
       });
       this.player.on('progress', function () {
-        // console.log('progress')
         if (_this.autoAudio && _this.lastOptions.hasAudio) {
           // 如果 m3u8 关闭这个功能
           if (_this.filename) {
@@ -4025,6 +4437,9 @@ var playerOptions = {
         _this.autoAudio = false;
       });
       this.player.on('timeupdate', function () {
+        // console.log(this.player)
+        _this.currentTime = _this.player.currentTime();
+
         if (_this.autoRate.enabled && _this.lastOptions.isLive) {
           // 当前播放时间
           var cur = _this.player.currentTime(); // 缓冲区尾部时间
@@ -4207,6 +4622,7 @@ var playerOptions = {
         }
       }
 
+      this.allowPause = options.allowPause;
       this.status = 2;
       var type = this.getMediaType(options.src);
 
@@ -4320,6 +4736,17 @@ var playerOptions = {
           this.player.muted(true);
         }
       }
+    },
+    togglePlay: function togglePlay() {
+      if (this.player) {
+        if (this.player.paused()) {
+          this.paused = false;
+          this.player.play();
+        } else {
+          this.paused = true;
+          this.player.pause();
+        }
+      }
     }
   },
   mounted: function mounted() {},
@@ -4336,106 +4763,6 @@ var playerOptions = {
 // EXTERNAL MODULE: ./src/vue-video-player.vue?vue&type=style&index=0&lang=scss&
 var vue_video_playervue_type_style_index_0_lang_scss_ = __webpack_require__("e6d3");
 
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-function normalizeComponent (
-  scriptExports,
-  render,
-  staticRenderFns,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier, /* server only */
-  shadowMode /* vue-cli only */
-) {
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (render) {
-    options.render = render
-    options.staticRenderFns = staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = 'data-v-' + scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = shadowMode
-      ? function () {
-        injectStyles.call(
-          this,
-          (options.functional ? this.parent : this).$root.$options.shadowRoot
-        )
-      }
-      : injectStyles
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functional component in vue file
-      var originalRender = options.render
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return originalRender(h, context)
-      }
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    }
-  }
-
-  return {
-    exports: scriptExports,
-    options: options
-  }
-}
-
 // CONCATENATED MODULE: ./src/vue-video-player.vue
 
 
@@ -4445,10 +4772,10 @@ function normalizeComponent (
 
 /* normalize component */
 
-var component = normalizeComponent(
+var vue_video_player_component = normalizeComponent(
   src_vue_video_playervue_type_script_lang_js_,
-  vue_video_playervue_type_template_id_b2c6d172_render,
-  vue_video_playervue_type_template_id_b2c6d172_staticRenderFns,
+  vue_video_playervue_type_template_id_1a03bade_render,
+  vue_video_playervue_type_template_id_1a03bade_staticRenderFns,
   false,
   null,
   null,
@@ -4456,7 +4783,7 @@ var component = normalizeComponent(
   
 )
 
-/* harmony default export */ var vue_video_player = (component.exports);
+/* harmony default export */ var vue_video_player = (vue_video_player_component.exports);
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-monitor.vue?vue&type=script&lang=js&
 
 
@@ -5161,6 +5488,22 @@ vue_video_monitor.install = function (Vue) {
 
 /***/ }),
 
+/***/ "fb47":
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__("eb06");
+if(content.__esModule) content = content.default;
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var add = __webpack_require__("499e").default
+var update = add("135da4aa", content, true, {"sourceMap":false,"shadowMode":false});
+
+/***/ }),
+
 /***/ "fc6a":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5199,7 +5542,7 @@ module.exports = fails(function () {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".vvp-player{width:352px;height:288px;position:relative}.vvp-player .vvp-shade{position:absolute;width:100%;height:100%;z-index:3;background-color:#000;font-family:VideoJs}.vvp-player .vvp-shade:before{display:block;content:\"\";font-size:72px;line-height:72px;color:grey;opacity:.8;top:calc(50% - 36px);left:calc(50% - 36px);position:absolute}.vvp-player .vvp-shade.vjs-waiting:before{content:\"\"}.vvp-player .vvp-shade.vjs-waiting .vjs-loading-spinner{margin:-27px 0 0 -27px;width:54px;height:54px;border-radius:27px}.vvp-player .vvp-shade.vjs-waiting .vvp-occupy{display:block}.vvp-player .vvp-shade .vvp-speed{position:absolute;color:#aaa;text-align:center;width:42px;top:15px;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:10px}.vvp-player .vvp-shade .vvp-occupy{display:none;position:absolute;width:100%;top:calc(50% + 33px);color:#aaa;text-align:center}.vvp-player .vvp-shade .vvp-error-ctx{display:none}.vvp-player .vvp-shade.vvp-error{display:table}.vvp-player .vvp-shade.vvp-error:before{content:\"\"}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx{display:table-cell;vertical-align:middle;font-family:VideoJs;text-align:center;opacity:.8}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx:before{display:block;content:\"\";font-size:48px;color:grey}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx .vvp-error-text{font-size:12px;color:#aaa;position:absolute;top:calc(50% + 25px);width:100%}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx .vvp-error-text p{margin:3px 0}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx .vvp-error-button{position:absolute;top:calc(50% - 24px);width:100%}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx .vvp-error-button span{cursor:pointer;display:block;height:48px;width:48px;margin:0 auto}.vvp-player .vvp-footer{position:absolute;bottom:0;height:30px;width:100%;background:rgba(30,30,30,.72);display:none}.vvp-player .vvp-footer .vvp-control{position:relative;text-align:center;margin:0;padding:0;height:100%;flex:none;color:#aaa}.vvp-player .vvp-footer .vvp-button{background:0 0;border:none;cursor:pointer;display:inline-block;text-transform:none;text-decoration:none;transition:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;width:36px;font-size:18px;line-height:30px}.vvp-player .vvp-footer .vvp-button:hover{text-shadow:0 0 1em #fff;color:#ccc}.vvp-player .vvp-footer .vvp-button:active{text-shadow:0 0 1em #fff;color:#fff}.vvp-player .vvp-footer .vvp-control-text{line-height:30px}.vvp-player .vvp-footer .vvp-control-speed{width:55px}.vvp-player .vvp-footer .vvp-control-info{width:auto;flex-grow:1;text-align:left;margin:0 5px}.vvp-player .vvp-footer .vvp-icon-placeholder{font-family:VideoJS;font-weight:400;font-style:normal}.vvp-player .vvp-footer .vvp-control-mute .vvp-icon-placeholder:before,.vvp-player .vvp-footer .vvp-vol-0 .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-footer .vvp-vol-3 .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-footer .vvp-control-fullscreen .vvp-icon-placeholder:before{content:\"\";font-size:22px;line-height:30px}.vvp-player .vvp-footer .vvp-control-record .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-footer .vvp-fetching .vvp-icon-placeholder:before{color:red}.vvp-player .vvp-footer .vvp-control-close .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-footer .vvp-control-snap .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-focus{position:absolute;width:100%;height:100%;border:1px solid green;box-sizing:border-box;z-index:6;display:none;pointer-events:none}.vvp-player .vvp-focus-show{display:block}.vvp-player .video-js{width:100%;height:100%}.vvp-player .video-js.vjs-playing .vjs-tech{pointer-events:none}.vvp-player .video-js .vjs-close-button{position:relative;height:100%;top:3px;font-size:.85em}.vvp-player .video-js .vvp-live .vjs-live-display{padding-left:6px}.vvp-player .vjs-header{position:absolute;top:0;display:none;flex-flow:row nowrap;justify-content:space-between;width:100%;height:3em;background-color:rgba(43,51,63,.7);pointer-events:none}.vvp-player .vjs-header>div{display:inline-block;line-height:3em;padding:0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vvp-player .vjs-header .vjs-h-speed{min-width:75px;text-align:right}.vvp-player .vjs-has-started .vjs-header{display:flex;visibility:visible;opacity:1;transition:visibility .1s,opacity .1s}.vvp-player .vjs-has-started .vjs-fetch-flv-ctx{top:25px!important}.vvp-player .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-header{visibility:visible;opacity:0;pointer-events:none;transition:visibility 1s,opacity 1s}.vvp-player .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-fetch-flv-ctx{top:0!important;transition:top 1.1s}.vvp-player .vvp-hide{display:none!important}.vvp-player.vvp-fill .video-js .vjs-tech{-o-object-fit:fill;object-fit:fill}.vvp-player.vvp-footer-show .vvp-shade{height:calc(100% - 30px)}.vvp-player.vvp-footer-show .vvp-footer{display:flex}.vvp-player.vvp-footer-show .video-js{height:calc(100% - 30px)}.vvp-player.vvp-footer-show .video-js .vjs-header{display:none}.vvp-player.vvp-footer-show .vjs-has-started .vjs-fetch-flv-ctx{top:0!important}", ""]);
+exports.push([module.i, ".vvp-player{width:352px;height:288px;position:relative}.vvp-player .vvp-shade{position:absolute;width:100%;height:100%;z-index:3;background-color:#000;font-family:VideoJs}.vvp-player .vvp-shade:before{display:block;content:\"\";font-size:72px;line-height:72px;color:grey;opacity:.8;top:calc(50% - 36px);left:calc(50% - 36px);position:absolute}.vvp-player .vvp-shade.vjs-waiting:before{content:\"\"}.vvp-player .vvp-shade.vjs-waiting .vjs-loading-spinner{margin:-27px 0 0 -27px;width:54px;height:54px;border-radius:27px}.vvp-player .vvp-shade.vjs-waiting .vvp-occupy{display:block}.vvp-player .vvp-shade .vvp-speed{position:absolute;color:#aaa;text-align:center;width:42px;top:15px;font-family:Avenir,Helvetica,Arial,sans-serif;font-size:10px}.vvp-player .vvp-shade .vvp-occupy{display:none;position:absolute;width:100%;top:calc(50% + 33px);color:#aaa;text-align:center}.vvp-player .vvp-shade .vvp-error-ctx{display:none}.vvp-player .vvp-shade.vvp-error{display:table}.vvp-player .vvp-shade.vvp-error:before{content:\"\"}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx{display:table-cell;vertical-align:middle;font-family:VideoJs;text-align:center;opacity:.8}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx:before{display:block;content:\"\";font-size:48px;color:grey}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx .vvp-error-text{font-size:12px;color:#aaa;position:absolute;top:calc(50% + 25px);width:100%}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx .vvp-error-text p{margin:3px 0}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx .vvp-error-button{position:absolute;top:calc(50% - 24px);width:100%}.vvp-player .vvp-shade.vvp-error .vvp-error-ctx .vvp-error-button span{cursor:pointer;display:block;height:48px;width:48px;margin:0 auto}.vvp-player .vvp-footer{position:absolute;bottom:0;height:30px;width:100%;background:rgba(30,30,30,.72);display:none}.vvp-player .vvp-footer .vvp-control{position:relative;text-align:center;margin:0;padding:0;height:100%;flex:none;color:#aaa}.vvp-player .vvp-footer .vvp-button{background:0 0;border:none;cursor:pointer;display:inline-block;text-transform:none;text-decoration:none;transition:none;-webkit-appearance:none;-moz-appearance:none;appearance:none;width:36px;font-size:18px;line-height:30px}.vvp-player .vvp-footer .vvp-button:hover{text-shadow:0 0 1em #fff;color:#ccc}.vvp-player .vvp-footer .vvp-button:active{text-shadow:0 0 1em #fff;color:#fff}.vvp-player .vvp-footer .vvp-control-text{line-height:30px}.vvp-player .vvp-footer .vvp-control-speed{width:55px}.vvp-player .vvp-footer .vvp-control-info{width:auto;flex-grow:1;text-align:left;margin:0 5px}.vvp-player .vvp-footer .vvp-icon-placeholder{font-family:VideoJS;font-weight:400;font-style:normal}.vvp-player .vvp-footer .vvp-control-play .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-footer .vvp-control-pause .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-footer .vvp-control-mute .vvp-icon-placeholder:before,.vvp-player .vvp-footer .vvp-vol-0 .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-footer .vvp-vol-3 .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-footer .vvp-control-fullscreen .vvp-icon-placeholder:before{content:\"\";font-size:22px;line-height:30px}.vvp-player .vvp-footer .vvp-control-record .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-footer .vvp-fetching .vvp-icon-placeholder:before{color:red}.vvp-player .vvp-footer .vvp-control-close .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-footer .vvp-control-snap .vvp-icon-placeholder:before{content:\"\"}.vvp-player .vvp-focus{position:absolute;width:100%;height:100%;border:1px solid green;box-sizing:border-box;z-index:6;display:none;pointer-events:none}.vvp-player .vvp-focus-show{display:block}.vvp-player .video-js{width:100%;height:100%}.vvp-player .video-js.vjs-playing .vjs-tech{pointer-events:none}.vvp-player .video-js .vjs-close-button{position:relative;height:100%;top:3px;font-size:.85em}.vvp-player .video-js .vvp-live .vjs-live-display{padding-left:6px}.vvp-player .vjs-header{position:absolute;top:0;display:none;flex-flow:row nowrap;justify-content:space-between;width:100%;height:3em;background-color:rgba(43,51,63,.7);pointer-events:none}.vvp-player .vjs-header>div{display:inline-block;line-height:3em;padding:0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vvp-player .vjs-header .vjs-h-speed{min-width:75px;text-align:right}.vvp-player .vjs-has-started .vjs-header{display:flex;visibility:visible;opacity:1;transition:visibility .1s,opacity .1s}.vvp-player .vjs-has-started .vjs-fetch-flv-ctx{top:25px!important}.vvp-player .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-header{visibility:visible;opacity:0;pointer-events:none;transition:visibility 1s,opacity 1s}.vvp-player .vjs-has-started.vjs-user-inactive.vjs-playing .vjs-fetch-flv-ctx{top:0!important;transition:top 1.1s}.vvp-player .vvp-hide{display:none!important}.vvp-player.vvp-fill .video-js .vjs-tech{-o-object-fit:fill;object-fit:fill}.vvp-player.vvp-footer-show .vvp-shade{height:calc(100% - 30px)}.vvp-player.vvp-footer-show .vvp-footer{display:flex}.vvp-player.vvp-footer-show .video-js{height:calc(100% - 30px)}.vvp-player.vvp-footer-show .video-js .vjs-header{display:none}.vvp-player.vvp-footer-show .vjs-has-started .vjs-fetch-flv-ctx{top:0!important}", ""]);
 // Exports
 module.exports = exports;
 

@@ -34,11 +34,23 @@
       </video>
     </div> -->
     <div class="vvp-footer">
+      <vue-video-bar v-if="false" :position="currentTime" :duration="46.613" />
+      <button
+        class="vvp-control vvp-button vvp-control-play"
+        :class="pauseCls"
+        v-if="allowPause"
+        type="button"
+        title="Pause"
+        aria-disabled="false"
+        @click="togglePlay()"
+      >
+        <span class="vvp-icon-placeholder" aria-hidden="true"></span>
+      </button>
       <button
         class="vvp-control vvp-button vvp-control-mute"
         :class="mutedCls"
         type="button"
-        title="Pause"
+        title="Muted"
         aria-disabled="false"
         @click="toggleMuted()"
       >
@@ -54,7 +66,7 @@
         class="vvp-control vvp-button vvp-control-record"
         :class="recordCls"
         type="button"
-        title="record"
+        title="Record"
         aria-disabled="false"
         @click="toggleRecord()"
       >
@@ -89,6 +101,7 @@ import 'videojs-fetch-flv'
 import 'videojs-fetch-flv/dist/videojs-fetch-flv.css'
 import 'videojs-contextmenu-pt'
 import 'videojs-contextmenu-pt/dist/videojs-contextmenu-pt.css'
+import VueVideoBar from './vue-video-bar.vue'
 import flvjs from 'flv.js'
 
 flvjs.LoggingControl.enableDebug = false
@@ -145,11 +158,15 @@ const playerOptions = {
     user: null
   },
   hasAudio: true,
+  allowPause: false,
   text: ''
 }
 
 export default {
   name: 'VueVideoPlayer',
+  components: {
+    VueVideoBar
+  },
   props: {
     // 自动追帧
     autoRate: {
@@ -218,7 +235,11 @@ export default {
       rate: 1.0,
       lastDecodedFrame: 0,
       lastDecodedCount: 0,
-      fetching: false
+      fetching: false,
+      currentTime: 0,
+      allowPause: false,
+      // 手动暂停
+      paused: false
     }
   },
   computed: {
@@ -284,6 +305,13 @@ export default {
         return 'vvp-vol-3'
       }
     },
+    pauseCls() {
+      if (this.paused) {
+        return 'vvp-control-pause'
+      } else {
+        return ''
+      }
+    },
     recordCls() {
       let cls = ''
       if (
@@ -323,6 +351,8 @@ export default {
       this.lastDecodedCount = 0
       this.lastDecodedFrame = 0
       this.fetching = false
+      this.allowPause = false
+      this.paused = false
     },
     createHeader(player) {
       const video = player.el()
@@ -433,6 +463,7 @@ export default {
       })
       this.player.on('loadeddata', () => {
         this.status = 3
+        // console.log(this.player.duration())
       })
       this.player.on('durationchange', () => {
         if (!this.player.controlBar.liveDisplay.hasClass('vjs-hidden')) {
@@ -445,7 +476,9 @@ export default {
       })
       this.player.on('pause', () => {
         // 不允许隐藏时暂停
-        this.player.play()
+        if (!this.paused) {
+          this.player.play()
+        }
       })
       // this.player.on('playing', () => {
       //   // console.log('playing')
@@ -458,7 +491,6 @@ export default {
         this.fetching = false
       })
       this.player.on('progress', () => {
-        // console.log('progress')
         if (this.autoAudio && this.lastOptions.hasAudio) {
           // 如果 m3u8 关闭这个功能
           if (this.filename) {
@@ -484,6 +516,8 @@ export default {
         this.autoAudio = false
       })
       this.player.on('timeupdate', () => {
+        // console.log(this.player)
+        this.currentTime = this.player.currentTime()
         if (this.autoRate.enabled && this.lastOptions.isLive) {
           // 当前播放时间
           const cur = this.player.currentTime()
@@ -652,6 +686,7 @@ export default {
           this.player.options().flvjs.mediaDataSource.hasAudio = false
         }
       }
+      this.allowPause = options.allowPause
       this.status = 2
       const type = this.getMediaType(options.src)
       if (options.content) {
@@ -750,6 +785,17 @@ export default {
           this.player.muted(false)
         } else {
           this.player.muted(true)
+        }
+      }
+    },
+    togglePlay() {
+      if (this.player) {
+        if (this.player.paused()) {
+          this.paused = false
+          this.player.play()
+        } else {
+          this.paused = true
+          this.player.pause()
         }
       }
     }
@@ -946,6 +992,18 @@ $footerHeight: 30px;
       font-family: VideoJS;
       font-weight: 400;
       font-style: normal;
+    }
+
+    .vvp-control-play {
+      .vvp-icon-placeholder:before {
+        content: '\f101';
+      }
+    }
+
+    .vvp-control-pause {
+      .vvp-icon-placeholder:before {
+        content: '\f103';
+      }
     }
 
     .vvp-control-mute {
