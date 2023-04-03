@@ -33,7 +33,7 @@
         </p>
       </video>
     </div> -->
-    <div class="vvp-footer">
+    <div class="vvp-footer" ref="footer">
       <vue-video-bar v-if="false" :position="currentTime" :duration="46.613" />
       <button
         class="vvp-control vvp-button"
@@ -337,6 +337,9 @@ export default {
           this.player.fetchObj.stop(false)
         }
         this.order = 0
+        if (this.player.isFullscreen()) {
+          this.$refs.vvplayer.appendChild(this.$refs.footer)
+        }
       }
       this.status = 0
       this.destoryPlayer()
@@ -534,13 +537,15 @@ export default {
       })
       this.player.on('fullscreenchange', () => {
         if (this.player.isFullscreen()) {
-          this.player.controlBar.show()
+          this.player.el_.appendChild(this.$refs.footer)
+          // this.player.controlBar.show()
           this.player.header.el.div.setAttribute('style', 'display: flex')
         } else {
           if (this.lockControlBar) {
             this.player.controlBar.hide()
             this.player.header.el.div.removeAttribute('style')
           }
+          this.$refs.vvplayer.appendChild(this.$refs.footer)
         }
       })
       this.player.on('volumechange', () => {
@@ -615,7 +620,9 @@ export default {
     },
     fullscreen() {
       if (this.player) {
-        if (!this.player.isFullscreen()) {
+        if (this.player.isFullscreen()) {
+          this.player.exitFullscreen()
+        } else {
           this.player.requestFullscreen()
         }
       }
