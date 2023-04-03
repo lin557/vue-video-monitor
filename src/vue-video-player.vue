@@ -36,7 +36,7 @@
     <div class="vvp-footer">
       <vue-video-bar v-if="false" :position="currentTime" :duration="46.613" />
       <button
-        class="vvp-control vvp-button vvp-control-play"
+        class="vvp-control vvp-button"
         :class="pauseCls"
         v-if="allowPause"
         type="button"
@@ -307,9 +307,9 @@ export default {
     },
     pauseCls() {
       if (this.paused) {
-        return 'vvp-control-pause'
+        return 'vvp-control-play'
       } else {
-        return ''
+        return 'vvp-control-pause'
       }
     },
     recordCls() {
