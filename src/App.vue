@@ -75,11 +75,15 @@ export default {
           title: 'master.m3u8'
         },
         {
+          src: 'http://hw-vl.cztv.com/channels/lantian/channel01/360p.m3u8?a=1000&d=2e81e5ce97d2a771861cbe3b0c492876&k=d0c0b9d2821a784c8527a7892b0555bf&t=1680572871',
+          title: 'cztv.m3u8'
+        },
+        {
           src: 'https://vjs.zencdn.net/v/oceans.mp4',
           title: 'oceans.mp4'
         },
         {
-          src: 'https://www.bmtasmartbus.com:9089/mdvr/live/2219501718_1.flv',
+          src: 'https://dno-xiu-hd.youku.com/lfgame/cmcu_alias_468727044_8134791.flv?auth_key=1712108217-0-0-2269e5976bb55d50bf8d6451208d5ffb',
           title: 'v.laifeng.flv'
         }
       ]
@@ -118,6 +122,9 @@ export default {
         ],
         isLive: false,
         allowPause: true,
+        startTime: 0,
+        // 时长 秒 默认0
+        duration: 47,
         // viewIndex: 1,
         hasAudio: true,
         data: {

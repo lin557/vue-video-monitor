@@ -34,7 +34,12 @@
       </video>
     </div> -->
     <div class="vvp-footer" ref="footer">
-      <vue-video-bar v-if="false" :position="currentTime" :duration="46.613" />
+      <vue-video-process
+        v-if="showBar"
+        @vvpposition="handlePositionChange"
+        :position="currentTime"
+        :duration="duration"
+      />
       <button
         class="vvp-control vvp-button"
         :class="pauseCls"
@@ -56,6 +61,9 @@
       >
         <span class="vvp-icon-placeholder" aria-hidden="true"></span>
       </button>
+      <div v-if="showBar" class="vvp-control vvp-control-text vvp-control-time">
+        <span>{{ playTime }}</span>
+      </div>
       <div class="vvp-control vvp-control-text vvp-control-info">
         {{ infoText }}
       </div>
@@ -101,8 +109,9 @@ import 'videojs-fetch-flv'
 import 'videojs-fetch-flv/dist/videojs-fetch-flv.css'
 import 'videojs-contextmenu-pt'
 import 'videojs-contextmenu-pt/dist/videojs-contextmenu-pt.css'
-import VueVideoBar from './vue-video-bar.vue'
+import VueVideoProcess from './vue-video-process.vue'
 import flvjs from 'flv.js'
+import { time2Str } from './utils'
 
 flvjs.LoggingControl.enableDebug = false
 flvjs.LoggingControl.enableVerbose = false
@@ -157,6 +166,9 @@ const playerOptions = {
     // 用户数据
     user: null
   },
+  startTime: 0,
+  // 自定义进度条
+  duration: 0,
   hasAudio: true,
   allowPause: false,
   text: ''
@@ -165,7 +177,7 @@ const playerOptions = {
 export default {
   name: 'VueVideoPlayer',
   components: {
-    VueVideoBar
+    VueVideoProcess
   },
   props: {
     // 自动追帧
@@ -239,7 +251,10 @@ export default {
       currentTime: 0,
       allowPause: false,
       // 手动暂停
-      paused: false
+      paused: false,
+      // 自定义进度条时长
+      duration: 0,
+      playTime: '00:00:00/00:45:00'
     }
   },
   computed: {
@@ -255,6 +270,9 @@ export default {
         default:
           return 'vvp-hide'
       }
+    },
+    showBar() {
+      return this.duration > 0
     },
     fillCls() {
       let cls = ''
@@ -356,6 +374,8 @@ export default {
       this.fetching = false
       this.allowPause = false
       this.paused = false
+      this.duration = 0
+      this.playTime = ''
     },
     createHeader(player) {
       const video = player.el()
@@ -466,7 +486,16 @@ export default {
       })
       this.player.on('loadeddata', () => {
         this.status = 3
-        // console.log(this.player.duration())
+        if (this.lastOptions.duration > 0) {
+          // 说明是直播流 http-flv 或 m3u8 直播流
+          if (this.player.duration() === Infinity) {
+            // 开启进度条
+            this.duration = this.lastOptions.duration
+          } else {
+            // 正常的视频
+            this.duration = this.player.duration()
+          }
+        }
       })
       this.player.on('durationchange', () => {
         if (!this.player.controlBar.liveDisplay.hasClass('vjs-hidden')) {
@@ -519,8 +548,14 @@ export default {
         this.autoAudio = false
       })
       this.player.on('timeupdate', () => {
-        // console.log(this.player)
-        this.currentTime = this.player.currentTime()
+        if (this.duration > 0) {
+          this.currentTime =
+            this.lastOptions.startTime + this.player.currentTime()
+          this.playTime =
+            time2Str(this.currentTime, this.duration) +
+            ' / ' +
+            time2Str(this.duration, this.duration)
+        }
         if (this.autoRate.enabled && this.lastOptions.isLive) {
           // 当前播放时间
           const cur = this.player.currentTime()
@@ -656,6 +691,18 @@ export default {
     },
     handleDblClick() {
       this.$emit('dblclick', this)
+    },
+    handlePositionChange(sender, position) {
+      if (this.player) {
+        if (this.player.duration() === Infinity) {
+          // 直播流 通知外部
+          this.$emit('positionchange', this, position)
+        } else {
+          // 非直播流
+          this.currentTime = position
+          this.player.currentTime(position)
+        }
+      }
     },
     mute() {
       this.player.volume(0)
@@ -826,6 +873,7 @@ $footerHeight: 30px;
   width: 352px;
   height: 288px;
   position: relative;
+  overflow: hidden;
 
   .vvp-shade {
     position: absolute;
@@ -984,6 +1032,11 @@ $footerHeight: 30px;
       line-height: $footerHeight;
     }
 
+    .vvp-control-time {
+      margin: 0 5px;
+      width: auto;
+    }
+
     .vvp-control-speed {
       width: 55px;
     }
@@ -1068,7 +1121,7 @@ $footerHeight: 30px;
     position: absolute;
     width: 100%;
     height: 100%;
-    border: 1px green solid;
+    border: 1px #2d4edf solid;
     box-sizing: border-box;
     z-index: 6;
     display: none;
