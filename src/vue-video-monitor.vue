@@ -14,6 +14,7 @@
         @click="playerClick"
         @dblclick="playerDbClick"
         @vvperror="playerError"
+        @vvpposition="playerPosition"
       ></vue-video-player>
 
       <!-- 边框 -->
@@ -525,6 +526,9 @@ export default {
     },
     playerError(player, errType, errDetails, e) {
       this.$emit('error', player, errType, errDetails, e)
+    },
+    playerPosition(player, position) {
+      this.$emit('position', player, position)
     },
     setFocus(player) {
       const lastFocus = this.getPlayerById(VUE_PLAYER_PREFIX + this.selected.id)

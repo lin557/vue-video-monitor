@@ -9,6 +9,7 @@
         :focused="true"
         :duplicate="false"
         @error="doError"
+        @position="doPosition"
         ref="monitor"
       />
       <div class="demo">
@@ -99,6 +100,25 @@ export default {
     doError(player, errType, errDetails, e) {
       console.log(player, errType, errDetails, e)
     },
+    doPosition(player, position) {
+      let opt = player.getOptions()
+      let index = player.index
+      // 关闭
+      player.close()
+      // 重新占用
+      this.$refs.monitor.apply({
+        viewIndex: index,
+        unique: opt.data.unique,
+        text: opt.text
+      })
+      opt.startTime = position
+      opt.viewIndex = index
+      // 模拟后台重新请求视频
+      setTimeout(() => {
+        this.$refs.monitor.play(opt)
+      }, 1000)
+      // console.log(position, opt, index)
+    },
     getSelected() {
       console.log(this.$refs.monitor.getSelected())
     },
@@ -124,7 +144,7 @@ export default {
         allowPause: true,
         startTime: 0,
         // 时长 秒 默认0
-        duration: 47,
+        duration: 147,
         // viewIndex: 1,
         hasAudio: true,
         data: {

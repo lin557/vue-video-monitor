@@ -548,7 +548,7 @@ export default {
         this.autoAudio = false
       })
       this.player.on('timeupdate', () => {
-        if (this.duration > 0) {
+        if (this.duration > 0 && !this.paused) {
           this.currentTime =
             this.lastOptions.startTime + this.player.currentTime()
           this.playTime =
@@ -696,7 +696,9 @@ export default {
       if (this.player) {
         if (this.player.duration() === Infinity) {
           // 直播流 通知外部
-          this.$emit('positionchange', this, position)
+          this.pause()
+          this.currentTime = position
+          this.$emit('vvpposition', this, position)
         } else {
           // 非直播流
           this.currentTime = position
@@ -725,6 +727,12 @@ export default {
           },
           text: text
         }
+      }
+    },
+    pause() {
+      if (this.player) {
+        this.paused = true
+        this.player.pause()
       }
     },
     play(option) {
@@ -848,8 +856,7 @@ export default {
           this.paused = false
           this.player.play()
         } else {
-          this.paused = true
-          this.player.pause()
+          this.pause()
         }
       }
     }
