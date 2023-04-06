@@ -144,7 +144,7 @@ export default {
         allowPause: true,
         startTime: 0,
         // 时长 秒 默认0
-        duration: 147,
+        duration: 22147,
         // viewIndex: 1,
         hasAudio: true,
         data: {

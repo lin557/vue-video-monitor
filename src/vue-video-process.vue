@@ -4,10 +4,12 @@
     class="vvp-bar-wrapper"
     @mousemove="handleMouseMove"
     @click="handleClick"
+    @mousedown="handleMouseDown"
+    @mouseover="handleMouseOver"
   >
     <div class="vvp-bar-time" ref="time" :style="timeStyle">{{ timeText }}</div>
     <div class="vvp-bar-inner">
-      <div class="vvp-bar-played" :style="barWidth">
+      <div class="vvp-bar-played" ref="played" :style="barWidth">
         <span class="vvp-bar-thumb" :style="thumbStyle"></span>
       </div>
     </div>
@@ -51,28 +53,50 @@ export default {
       if (cur > 100) {
         cur = 100
       }
-      return 'background:' + this.themeColor + ';width:' + cur + '%'
+      let style = 'background:' + this.themeColor + ';'
+      if (this.mouseDown) {
+        return style + 'width:' + this.tempWidth + 'px'
+      } else {
+        return style + 'width:' + cur + '%'
+      }
     },
     timeStyle() {
       return 'left:' + this.timeLeft + 'px'
     },
     timeText() {
-      return time2Str(this.timeMove, true)
+      if (this.timeMove === 0 && this.position > 0) {
+        this.updateTimeMove()
+      }
+      return time2Str(this.timeMove, this.duration)
     }
   },
   data() {
     return {
       timeLeft: 0,
-      timeMove: 0
+      timeMove: 0,
+      tempWidth: 0,
+      mouseDown: false
     }
   },
   methods: {
+    updateTimeMove() {
+      this.timeMove = this.position
+      this.timeLeft = 8000
+    },
     handleMouseMove(e) {
+      this.tempWidth = e.offsetX
       this.timeLeft = e.offsetX - this.$refs.time.clientWidth / 2
       this.timeMove = this.px2second(e.offsetX)
-      // console.log(this.timeMove)
+    },
+    handleMouseDown(e) {
+      this.tempWidth = e.offsetX
+      this.mouseDown = true
+    },
+    handleMouseOver() {
+      this.mouseDown = false
     },
     handleClick(e) {
+      this.mouseDown = false
       this.timeMove = this.px2second(e.offsetX)
       this.$emit('vvpposition', this, this.timeMove)
     },
@@ -94,20 +118,6 @@ export default {
       // 1像素多长时间
       let pxTime = this.duration / width
       return offsetX * pxTime
-    },
-    getTime(t) {
-      // 小时： h = parseInt(总秒数 / 60 / 60 % 24)
-      // 分钟： m = parseInt(总秒数 / 60 % 60)
-      // 秒：   s = parseInt(总秒数 % 60)
-      let h = parseInt((t / 60 / 60) % 24)
-      let m = parseInt((t / 60) % 60)
-      let s = parseInt(t % 60)
-      // 因为h已经是数字型了，如果0不加引号就变成加法了
-      let showHour = this.duration >= 3600
-      h = h < 10 ? '0' + h : h
-      m = m < 10 ? '0' + m : m
-      s = s < 10 ? '0' + s : s
-      return showHour ? `${h}:${m}:${s}` : `${m}:${s}`
     }
   }
 }
@@ -117,14 +127,15 @@ export default {
 .vvp-bar-wrapper {
   position: absolute;
   top: -11px;
-  height: 11px;
+  height: 13px;
   width: 100%;
   z-index: 5;
   cursor: pointer;
+  //background-color: rgba(0, 255, 0, 0.62);
 
   .vvp-bar-border {
-    background: rgba(30, 30, 30, 0.72);
-    height: 2px;
+    border-top: 1px solid rgba(0, 0, 0, 0.62);
+    pointer-events: none;
   }
 
   .vvp-bar-time {
@@ -151,7 +162,8 @@ export default {
     margin-top: 7px;
     height: 3px;
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.4);
+    pointer-events: none;
 
     .vvp-bar-played {
       height: 100%;
@@ -178,6 +190,7 @@ export default {
   }
 }
 .vvp-bar-wrapper:hover {
+  height: 20px;
   .vvp-bar-inner {
     margin-top: 6px;
     height: 5px;
@@ -191,6 +204,9 @@ export default {
   }
   .vvp-bar-time {
     display: block;
+  }
+  .vvp-bar-border {
+    display: none;
   }
 }
 </style>
