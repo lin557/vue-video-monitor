@@ -1,6 +1,6 @@
 {
   "name": "vue-video-monitor",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "Multi-window video player",
   "private": false,
   "main": "dist/vue-video-monitor.umd.js",

@@ -2199,7 +2199,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__("24fb");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".vvp-bar-wrapper{position:absolute;top:-11px;height:11px;width:100%;z-index:5;cursor:pointer}.vvp-bar-wrapper .vvp-bar-border{background:rgba(30,30,30,.72);height:2px}.vvp-bar-wrapper .vvp-bar-time{position:absolute;left:0;top:-22px;border-radius:4px;padding:5px 7px;background-color:rgba(0,0,0,.62);color:#fff;font-size:12px;text-align:center;opacity:1;transition:opacity .1s ease-in-out;word-wrap:normal;word-break:normal;z-index:2;pointer-events:none;display:none;font-family:Verdana,Tahoma,sans-serif}.vvp-bar-wrapper .vvp-bar-inner{margin-top:7px;height:3px;width:100%;background-color:hsla(0,0%,100%,.3)}.vvp-bar-wrapper .vvp-bar-inner .vvp-bar-played{height:100%;width:100px;z-index:1;position:relative}.vvp-bar-wrapper .vvp-bar-inner .vvp-bar-played .vvp-bar-thumb{width:9px;height:9px;z-index:2;border:1px solid hsla(0,0%,100%,.6);border-radius:5px;position:absolute;right:-4px;top:-2px;transition:all .2s ease-in-out;transform:scale(0);pointer-events:none}.vvp-bar-wrapper:hover .vvp-bar-inner{margin-top:6px;height:5px}.vvp-bar-wrapper:hover .vvp-bar-inner .vvp-bar-played .vvp-bar-thumb{top:-3px;transform:scale(1)}.vvp-bar-wrapper:hover .vvp-bar-time{display:block}", ""]);
+exports.push([module.i, ".vvp-bar-wrapper{position:absolute;top:-11px;height:13px;width:100%;z-index:5;cursor:pointer}.vvp-bar-wrapper .vvp-bar-border{border-top:1px solid rgba(0,0,0,.62);pointer-events:none}.vvp-bar-wrapper .vvp-bar-time{position:absolute;left:0;top:-22px;border-radius:4px;padding:5px 7px;background-color:rgba(0,0,0,.62);color:#fff;font-size:12px;text-align:center;opacity:1;transition:opacity .1s ease-in-out;word-wrap:normal;word-break:normal;z-index:2;pointer-events:none;display:none;font-family:Verdana,Tahoma,sans-serif}.vvp-bar-wrapper .vvp-bar-inner{margin-top:7px;height:3px;width:100%;background-color:hsla(0,0%,100%,.4);pointer-events:none}.vvp-bar-wrapper .vvp-bar-inner .vvp-bar-played{height:100%;width:100px;z-index:1;position:relative}.vvp-bar-wrapper .vvp-bar-inner .vvp-bar-played .vvp-bar-thumb{width:9px;height:9px;z-index:2;border:1px solid hsla(0,0%,100%,.6);border-radius:5px;position:absolute;right:-4px;top:-2px;transition:all .2s ease-in-out;transform:scale(0);pointer-events:none}.vvp-bar-wrapper:hover{height:20px}.vvp-bar-wrapper:hover .vvp-bar-inner{margin-top:6px;height:5px}.vvp-bar-wrapper:hover .vvp-bar-inner .vvp-bar-played .vvp-bar-thumb{top:-3px;transform:scale(1)}.vvp-bar-wrapper:hover .vvp-bar-time{display:block}.vvp-bar-wrapper:hover .vvp-bar-border{display:none}", ""]);
 // Exports
 module.exports = exports;
 
@@ -3672,12 +3672,12 @@ var external_videojs_contextmenu_pt_ = __webpack_require__("fa83");
 // EXTERNAL MODULE: ./node_modules/videojs-contextmenu-pt/dist/videojs-contextmenu-pt.css
 var videojs_contextmenu_pt = __webpack_require__("007b");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"6727a729-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-process.vue?vue&type=template&id=1696ec7e&
-var vue_video_processvue_type_template_id_1696ec7e_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"bar",staticClass:"vvp-bar-wrapper",on:{"mousemove":_vm.handleMouseMove,"click":_vm.handleClick}},[_c('div',{ref:"time",staticClass:"vvp-bar-time",style:(_vm.timeStyle)},[_vm._v(_vm._s(_vm.timeText))]),_c('div',{staticClass:"vvp-bar-inner"},[_c('div',{staticClass:"vvp-bar-played",style:(_vm.barWidth)},[_c('span',{staticClass:"vvp-bar-thumb",style:(_vm.thumbStyle)})])]),_c('div',{staticClass:"vvp-bar-border"})])}
-var vue_video_processvue_type_template_id_1696ec7e_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"6727a729-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-process.vue?vue&type=template&id=a6bced86&
+var vue_video_processvue_type_template_id_a6bced86_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"bar",staticClass:"vvp-bar-wrapper",on:{"mousemove":_vm.handleMouseMove,"click":_vm.handleClick,"mousedown":_vm.handleMouseDown,"mouseover":_vm.handleMouseOver}},[_c('div',{ref:"time",staticClass:"vvp-bar-time",style:(_vm.timeStyle)},[_vm._v(_vm._s(_vm.timeText))]),_c('div',{staticClass:"vvp-bar-inner"},[_c('div',{ref:"played",staticClass:"vvp-bar-played",style:(_vm.barWidth)},[_c('span',{staticClass:"vvp-bar-thumb",style:(_vm.thumbStyle)})])]),_c('div',{staticClass:"vvp-bar-border"})])}
+var vue_video_processvue_type_template_id_a6bced86_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/vue-video-process.vue?vue&type=template&id=1696ec7e&
+// CONCATENATED MODULE: ./src/vue-video-process.vue?vue&type=template&id=a6bced86&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.concat.js
 var es_array_concat = __webpack_require__("99af");
@@ -3700,7 +3700,8 @@ function time2Str(t, duration) {
 }
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/vue-video-process.vue?vue&type=script&lang=js&
 
-
+//
+//
 //
 //
 //
@@ -3757,27 +3758,52 @@ function time2Str(t, duration) {
         cur = 100;
       }
 
-      return 'background:' + this.themeColor + ';width:' + cur + '%';
+      var style = 'background:' + this.themeColor + ';';
+
+      if (this.mouseDown) {
+        return style + 'width:' + this.tempWidth + 'px';
+      } else {
+        return style + 'width:' + cur + '%';
+      }
     },
     timeStyle: function timeStyle() {
       return 'left:' + this.timeLeft + 'px';
     },
     timeText: function timeText() {
-      return time2Str(this.timeMove, true);
+      if (this.timeMove === 0 && this.position > 0) {
+        this.updateTimeMove();
+      }
+
+      return time2Str(this.timeMove, this.duration);
     }
   },
   data: function data() {
     return {
       timeLeft: 0,
-      timeMove: 0
+      timeMove: 0,
+      tempWidth: 0,
+      mouseDown: false
     };
   },
   methods: {
+    updateTimeMove: function updateTimeMove() {
+      this.timeMove = this.position;
+      this.timeLeft = 8000;
+    },
     handleMouseMove: function handleMouseMove(e) {
+      this.tempWidth = e.offsetX;
       this.timeLeft = e.offsetX - this.$refs.time.clientWidth / 2;
-      this.timeMove = this.px2second(e.offsetX); // console.log(this.timeMove)
+      this.timeMove = this.px2second(e.offsetX);
+    },
+    handleMouseDown: function handleMouseDown(e) {
+      this.tempWidth = e.offsetX;
+      this.mouseDown = true;
+    },
+    handleMouseOver: function handleMouseOver() {
+      this.mouseDown = false;
     },
     handleClick: function handleClick(e) {
+      this.mouseDown = false;
       this.timeMove = this.px2second(e.offsetX);
       this.$emit('vvpposition', this, this.timeMove);
     },
@@ -3802,20 +3828,6 @@ function time2Str(t, duration) {
 
       var pxTime = this.duration / width;
       return offsetX * pxTime;
-    },
-    getTime: function getTime(t) {
-      // 小时： h = parseInt(总秒数 / 60 / 60 % 24)
-      // 分钟： m = parseInt(总秒数 / 60 % 60)
-      // 秒：   s = parseInt(总秒数 % 60)
-      var h = parseInt(t / 60 / 60 % 24);
-      var m = parseInt(t / 60 % 60);
-      var s = parseInt(t % 60); // 因为h已经是数字型了，如果0不加引号就变成加法了
-
-      var showHour = this.duration >= 3600;
-      h = h < 10 ? '0' + h : h;
-      m = m < 10 ? '0' + m : m;
-      s = s < 10 ? '0' + s : s;
-      return showHour ? "".concat(h, ":").concat(m, ":").concat(s) : "".concat(m, ":").concat(s);
     }
   }
 });
@@ -3935,8 +3947,8 @@ function normalizeComponent (
 
 var component = normalizeComponent(
   src_vue_video_processvue_type_script_lang_js_,
-  vue_video_processvue_type_template_id_1696ec7e_render,
-  vue_video_processvue_type_template_id_1696ec7e_staticRenderFns,
+  vue_video_processvue_type_template_id_a6bced86_render,
+  vue_video_processvue_type_template_id_a6bced86_staticRenderFns,
   false,
   null,
   null,
