@@ -15,6 +15,7 @@
         @dblclick="playerDbClick"
         @vvperror="playerError"
         @vvpposition="playerPosition"
+        @vvpclose="playerClose"
       ></vue-video-player>
 
       <!-- 边框 -->
@@ -513,6 +514,9 @@ export default {
     },
     playerClick(player) {
       this.setFocus(player)
+    },
+    playerClose(player, opts) {
+      this.$emit('close', player, opts)
     },
     playerDbClick(player) {
       if (this.viewCount === 1) {

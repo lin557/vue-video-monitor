@@ -366,6 +366,7 @@ export default {
       this.speed = null
       this.filename = null
       this.progress = 0
+      const opts = this.lastOptions
       this.lastOptions = null
       this.rate = 1.0
       this.muted = true
@@ -376,6 +377,9 @@ export default {
       this.paused = false
       this.duration = 0
       this.playTime = ''
+      if (opts) {
+        this.$emit('vvpclose', this, opts)
+      }
     },
     createHeader(player) {
       const video = player.el()

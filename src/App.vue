@@ -10,6 +10,7 @@
         :duplicate="false"
         @error="doError"
         @position="doPosition"
+        @close="doClose"
         ref="monitor"
       />
       <div class="demo">
@@ -96,6 +97,9 @@ export default {
     },
     controlShow() {
       this.controlBar.enabled = true
+    },
+    doClose(player, opts) {
+      console.log(player, opts)
     },
     doError(player, errType, errDetails, e) {
       console.log(player, errType, errDetails, e)
